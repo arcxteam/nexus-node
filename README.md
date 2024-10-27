@@ -48,13 +48,13 @@ sudo apt install build-essential pkg-config libssl-dev git-all
 ```
 ## 2. Quick start install
 
-**1. From auto installer**
+**1. Auto installer**
 
 ```
 curl sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus.sh | bash
 ```
 
-**2. From Manual installer**
+**2. Manual installer**
 
 ```
 curl https://cli.nexus.xyz/ | sh
@@ -78,6 +78,10 @@ git checkout tags/0.3.1-beta
 
 **1. Based-on Java running Nexus node**
 
+`Save your Prover-id`
+
+- cat $HOME/.nexus/prover-id; echo ""
+
 `Start and enable the service`
 
 - sudo systemctl stop nexus.service
@@ -93,3 +97,10 @@ git checkout tags/0.3.1-beta
 
 - journalctl -u nexus.service -f -n 100
 
+**2. Important note** 
+
+`Delete all Nexus Node - running service`
+
+```
+sudo systemctl stop nexus.service && sudo systemctl disable nexus.service && sudo rm /etc/systemd/system/nexus.service && sudo systemctl daemon-reload && sudo systemctl reset-failed
+```
