@@ -43,21 +43,53 @@ The Nexus zkVM (zero-knowledge virtual machine) is a modular, extensible, open-s
 If you don't have these dependencies already, install them first.
 
 ```
-sudo apt update
-sudo apt upgrade
+sudo apt update && sudo apt upgrade -y 
 sudo apt install build-essential pkg-config libssl-dev git-all
 ```
 ## 2. Quick start install
 
-`From auto installer`
+**1. From auto installer**
+
+```
+curl sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus.sh | bash
+```
+
+**2. From Manual installer**
 
 ```
 curl https://cli.nexus.xyz/ | sh
 ```
 
-`Manual installer`
-
-```
-curl https://cli.nexus.xyz/ | sh
-```
 If you do not already have Rust, you will be prompted to install it.
+
+## 3. Getting an error
+
+If have facing issue on logs `Proof sent! You proved at 0 Hz` to be here https://github.com/nexus-xyz/network-api/releases/
+
+**1. Upgrade & Restart service to latest version**
+
+```
+cd/root/network-api
+git fetch --all
+git checkout tags/0.3.1-beta
+```
+
+## 4. Super commands usefull
+
+**1. Based-on Java running Nexus node**
+
+`Start and enable the service`
+
+- sudo systemctl stop nexus.service
+- sudo systemctl start nexus.service
+- sudo systemctl restart nexus.service
+- sudo systemctl enable nexus.service
+
+`Checking the status`
+
+- sudo systemctl status nexus.service
+
+`Monitor the logs`
+
+- journalctl -u nexus.service -f -n 100
+
