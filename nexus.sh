@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Gas bang 😂 ini untuk menginstal dependensi dan layanan
+# Gas bang 😂 jalankan pemenginstal dependensi dan layanan
 install_nexus() {
     echo "Updating packages..."
     sudo apt update && sudo apt upgrade -y
@@ -24,13 +24,13 @@ install_nexus() {
     echo "Installing Nexus Prover..."
     sudo curl https://cli.nexus.xyz/install.sh | sh
 
-    echo "Menyesuaikan kepemilikan file..."
+    echo "Setting file ownership for Nexus..."
     sudo chown -R root:root /root/.nexus
 
     SERVICE_FILE="/etc/systemd/system/nexus.service"
     
     if [ ! -f "$SERVICE_FILE" ]; then
-        echo "Creating systemd service file for nexus..."
+        echo "Creating systemd service file for Nexus..."
         sudo tee $SERVICE_FILE > /dev/null <<EOF
 [Unit]
 Description=Nexus Network
@@ -53,10 +53,30 @@ EOF
         echo "Service file already exists. Skipping creation."
     fi
 
-    echo "Reloading systemd daemon and enabling nexus service..."
+    echo "Reloading systemd daemon and enabling Nexus service..."
     sudo systemctl daemon-reload
     sudo systemctl enable nexus.service
     sudo systemctl start nexus.service
+}
+
+# Fungsi untuk memperbarui Nexus Network API ke versi terbaru
+update_nexus_api() {
+    echo "Checking for updates in Nexus Network API..."
+    cd ~/.nexus/network-api
+
+    # Mengambil semua pembaruan terbaru dari repository
+    git fetch --all --tags
+
+    # Mendapatkan tag rilis terbaru dari repository
+    LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+
+    # Checkout ke versi terbaru
+    git checkout $LATEST_TAG
+
+    # Membersihkan dan membangun ulang proyek dengan versi terbaru
+    cargo clean
+    cargo build --release
+    echo "Nexus Network API updated to the latest version ($LATEST_TAG)."
 }
 
 # Fungsi untuk menginstal dan mengatur Nexus ZKVM
@@ -115,7 +135,7 @@ fix_unused_import() {
 
 # Fungsi untuk menghapus layanan dan membersihkan
 cleanup() {
-    echo "Menghentikan dan menonaktifkan layanan nexus..."
+    echo "Menghentikan dan menonaktifkan layanan Nexus..."
     sudo systemctl stop nexus.service
     sudo systemctl disable nexus.service
     echo "Menghapus file layanan..."
@@ -139,12 +159,15 @@ ensure_service_running() {
     fi
 }
 
-# Eksekusi skrip
+# Eksekusi skrip dulu 😎
 echo "Membersihkan instalasi lama..."
 cleanup
 
 echo "Menginstal Nexus..."
 install_nexus
+
+echo "Memeriksa pembaruan Nexus Network API..."
+update_nexus_api
 
 echo "Mengatur Nexus ZKVM..."
 setup_nexus_zkvm
@@ -152,7 +175,7 @@ setup_nexus_zkvm
 echo "Memperbaiki peringatan impor yang tidak digunakan..."
 fix_unused_import
 
-# Test tancap gigi 7 😅 Nexus Prover dan cek kesalahan
+# Test Nexus Prover dan cek kesalahan
 if ! cargo run --release --bin prover -- beta.orchestrator.nexus.xyz; then
     echo "Kesalahan terdeteksi, membersihkan dan menginstal ulang..."
     cleanup
