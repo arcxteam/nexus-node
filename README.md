@@ -1,11 +1,11 @@
 ![ezgif com-webp-to-png-converter (1)](https://github.com/user-attachments/assets/2eed75ac-39c4-4abc-92d4-a8236ecb725a)
 
-# Nexus Testnet Node - Guides
+# Nexus Testnet Node - Full Guides Fix Issue
 
 The Nexus zkVM (zero-knowledge virtual machine) is a modular, extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security.
 
 
-## Here We Go...Guys!!!
+## Here We Go...Gas!!!
 *There mentioned in FAQs, Do is incentivized??* 
 > **What incentives do you offer for contributing to the network? At this time, contributors receive recognition through public leaderboards. Nexus may implement additional incentives in a future release. Read here https://nexus.xyz/network#network-faqs**
 
