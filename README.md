@@ -38,7 +38,7 @@ The Nexus zkVM (zero-knowledge virtual machine) is a modular, extensible, open-s
 | Portable Devices                  | Hand/mobile phones, PC/Laptop/Netbooks, Tablet | 
 | Web Browser                       | Chrome, Firefox, Safari, Opera, Brave, Edge, UC/Kiwi etc.. |
 
-**2. Configuration nexus prover node**
+**3. Configuration nexus prover node**
 
 If you don't have these dependencies already, install them first.
 
@@ -74,7 +74,7 @@ git fetch --all
 git checkout tags/0.3.1-beta
 ```
 
-## 4. Super commands usefull
+## 4. Super usefull commands
 
 **1. Based-on Java running Nexus node**
 
@@ -99,7 +99,7 @@ git checkout tags/0.3.1-beta
 
 **2. Important note** 
 
-`Delete all Nexus Node - running service`
+- Delete all Nexus Node - running service
 
 ```
 sudo systemctl stop nexus.service && sudo systemctl disable nexus.service && sudo rm /etc/systemd/system/nexus.service && sudo systemctl daemon-reload && sudo systemctl reset-failed
