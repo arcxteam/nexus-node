@@ -38,12 +38,12 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
+Type=simple
 User=root
 WorkingDirectory=/root/.nexus/network-api/clients/cli
 ExecStart=/root/.cargo/bin/cargo run --release --bin prover -- beta.orchestrator.nexus.xyz
-Restart=on-failure
-RestartSec=3
-LimitNOFILE=65535
+Restart=always
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
