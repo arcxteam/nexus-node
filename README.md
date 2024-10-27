@@ -1,9 +1,9 @@
 ![ezgif com-webp-to-png-converter (1)](https://github.com/user-attachments/assets/2eed75ac-39c4-4abc-92d4-a8236ecb725a)
 
-# Nexus Labs Testnet Node - Full Guides Fix Issue
+# Nexus Labs Testnet Node - Full Guides Fix Issue (prover network)
 
-The Nexus zkVM (zero-knowledge virtual machine) is a modular, extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security.
-
+The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security.
+Read this step to runnig Nexus node as Prover Network.
 
 ## Here We Go...Gas!!!
 *There mentioned in FAQs, Do is incentivized??* 
@@ -15,7 +15,7 @@ The Nexus zkVM (zero-knowledge virtual machine) is a modular, extensible, open-s
 
 | Incentivized Activity             | Allocation Token |
 |-----------------------------------|---------------|
-| Running Prover Node               | 0% xxx Nexus (TBA) |
+| Running Nexus Prover Node               | 0% xxx (TBA) |
 | xxxxxxxxxxx                       | xxxxx (TBA) |
 
 ## 1. Preparation for Nexus Prover Node
@@ -62,21 +62,21 @@ curl https://cli.nexus.xyz/ | sh
 
 If you do not already have Rust, you will be prompted to install it.
 
-## 3. Getting an error
+## 3. Getting an error fix
 
-If have facing issue on logs `Proof sent! You proved at 0 Hz` to be here https://github.com/nexus-xyz/network-api/releases/
+If have facing issue on logs `Proof sent! You proved at 0 Hz` to latest https://github.com/nexus-xyz/network-api/releases/
 
 **1. Upgrade & Restart service to latest version**
 
 ```
-cd/root/network-api
+cd/.nexus/network-api
 git fetch --all
 git checkout tags/0.3.1-beta
 ```
 
 ## 4. Super usefull commands
 
-**1. Based-on Java running Nexus node**
+**1. Based-on ran Nexus Labs node**
 
 `Save your Prover-id`
 
@@ -101,7 +101,7 @@ git checkout tags/0.3.1-beta
 
 **2. Important note** 
 
-- Delete all Nexus Node - running service
+- Delete all Nexus Node running service
 
 ```
 sudo systemctl stop nexus.service && sudo systemctl disable nexus.service && sudo rm /etc/systemd/system/nexus.service && sudo systemctl daemon-reload && sudo systemctl reset-failed
