@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Fungsi untuk menginstal dependensi dan layanan
+# Gas bang 😂 ini untuk menginstal dependensi dan layanan
 install_nexus() {
     echo "Updating packages..."
     sudo apt update && sudo apt upgrade -y
@@ -43,7 +43,8 @@ User=root
 WorkingDirectory=/root/.nexus/network-api/clients/cli
 ExecStart=/root/.cargo/bin/cargo run --release --bin prover -- beta.orchestrator.nexus.xyz
 Restart=always
-RestartSec=10
+RestartSec=11
+LimitNOFILE=65000
 
 [Install]
 WantedBy=multi-user.target
