@@ -85,13 +85,15 @@ git checkout tags/0.3.1-beta
 `Start and enable the service`
 
 - sudo systemctl stop nexus.service
+- sudo systemctl daemon-reload
+- sudo systemctl enable nexus.service
 - sudo systemctl start nexus.service
 - sudo systemctl restart nexus.service
-- sudo systemctl enable nexus.service
 
 `Checking the status`
 
 - sudo systemctl status nexus.service
+- ps aux | grep nexus
 
 `Monitor the logs`
 
