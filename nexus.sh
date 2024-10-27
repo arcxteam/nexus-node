@@ -49,8 +49,8 @@ EOF
 
     echo "Reloading systemd daemon and starting nexus service..."
     sudo systemctl daemon-reload
-    sudo systemctl enable nexus
-    sudo systemctl start nexus
+    sudo systemctl enable nexus.service  # Baris ini diperbaiki
+    sudo systemctl start nexus.service   # Baris ini diperbaiki
 }
 
 # Berfungsi memperbaiki peringatan impor yang tidak digunakan
@@ -62,8 +62,8 @@ fix_unused_import() {
 # Berfungsi menghapus layanan dan membersihkan
 cleanup() {
     echo "Menghentikan dan menonaktifkan layanan nexus..."
-    sudo systemctl stop nexus
-    sudo systemctl disable nexus
+    sudo systemctl stop nexus.service   # Baris ini diperbaiki
+    sudo systemctl disable nexus.service  # Baris ini diperbaiki
     echo "Menghapus file layanan..."
     sudo rm -f /etc/systemd/system/nexus.service
     echo "Memuat ulang daemon systemd..."
@@ -72,14 +72,14 @@ cleanup() {
 
 # Berfungsi memastikan layanan berjalan
 ensure_service_running() {
-    if ! systemctl is-active --quiet nexus; then
+    if ! systemctl is-active --quiet nexus.service; then   # Baris ini diperbaiki
         echo "Nexus service tidak berjalan. Mencoba memulai..."
-        sudo systemctl start nexus
+        sudo systemctl start nexus.service   # Baris ini diperbaiki
     fi
     
-    if ! systemctl is-active --quiet nexus; then
+    if ! systemctl is-active --quiet nexus.service; then   # Baris ini diperbaiki
         echo "Gagal memulai layanan Nexus. Memeriksa log..."
-        sudo journalctl -u nexus -n 50 --no-pager
+        sudo journalctl -u nexus.service -n 50 --no-pager   # Baris ini diperbaiki
     else
         echo "Layanan Nexus berhasil dimulai."
     fi
@@ -108,7 +108,7 @@ echo "Memastikan layanan berjalan..."
 ensure_service_running
 
 echo "Instalasi selesai. Memeriksa status layanan..."
-sudo systemctl status nexus
+sudo systemctl status nexus.service   # Baris ini diperbaiki
 
 echo "Mengikuti log untuk layanan nexus..."
-sudo journalctl -fu nexus -o cat
+sudo journalctl -fu nexus.service -o cat   # Baris ini diperbaiki
