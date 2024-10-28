@@ -1,6 +1,6 @@
-![ezgif com-webp-to-png-converter (1)](https://github.com/user-attachments/assets/2eed75ac-39c4-4abc-92d4-a8236ecb725a)
+![com-webp-to-png-converter](https://github.com/user-attachments/assets/0fb7877d-8638-49a3-8a3f-670f9de617d9)
 
-# Nexus Labs Testnet Node - Full Guides Fix Issue (prover network)
+# Nexus Labs Testnet Node - Full Guides Fix Issue (Prover Network)
 
 The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security.
 Read this step to runnig Nexus node as Prover Network.
@@ -11,7 +11,7 @@ Read this step to runnig Nexus node as Prover Network.
 
 *As following categories of contributions and this incentive pools are indicated on faqs.*
 
-![N-E-X-U-S-10-27-2024_12_46_AM](https://github.com/user-attachments/assets/a784a339-aa03-4bfc-ad3f-3f4f39553af3)
+![N-E-X-U-S-10-27-2024_12_46_AM](https://github.com/user-attachments/assets/8f195829-249f-4528-862d-e94bcb55d4df)
 
 | Incentivized Activity             | Allocation Token |
 |-----------------------------------|---------------|
@@ -38,7 +38,7 @@ Read this step to runnig Nexus node as Prover Network.
 | Portable Devices                  | Hand/mobile phones, PC/Laptop/Netbooks, Tablet | 
 | Web Browser                       | Chrome, Firefox, Safari, Opera, Brave, Edge, UC/Kiwi etc.. |
 
-**3. Configuration nexus prover node**
+**3. Configuration Nexus prover node**
 
 If you don't have these dependencies already, install them first.
 
@@ -46,7 +46,7 @@ If you don't have these dependencies already, install them first.
 sudo apt update && sudo apt upgrade -y 
 sudo apt install build-essential pkg-config libssl-dev git-all
 ```
-## 2. Quick start install
+## 2. Quick Start Install
 
 **1. Auto installer**
 
@@ -62,23 +62,30 @@ curl https://cli.nexus.xyz/ | sh
 
 If you do not already have Rust, you will be prompted to install it.
 
-## 3. Getting an error fix
+## 3. Getting an Error Fix
 
-If have facing issue on logs `Proof sent! You proved at 0 Hz` to latest https://github.com/nexus-xyz/network-api/releases/
+logs: If have facing issue on cycles `Proof sent! You proved at 0 Hz` for the latest https://github.com/nexus-xyz/network-api/releases/
 
-**1. Upgrade & Restart service to latest version**
+**1. Upgrade & restart service for network-api**
 
 ```
-cd/.nexus/network-api
-git fetch --all
-git checkout tags/0.3.1-beta
+cd ~/.nexus/network-api && \
+git fetch --all --tags && \
+LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1)) && \
+git checkout $LATEST_TAG && \
+cargo clean && \
+cargo build --release && \
+sudo systemctl daemon-reload && \
+sudo systemctl restart nexus.service
 ```
 
-## 4. Super usefull commands
+![Desktop-screenshot-10-27-2024_02_16_PM](https://github.com/user-attachments/assets/d79d1b01-07d0-4589-8e2f-a36349ef986a)
+
+## 4. Super Usefull Commands
 
 **1. Based-on ran Nexus Labs node**
 
-`Save your Prover-id`
+`Save the Prover-id`
 
 - cat $HOME/.nexus/prover-id; echo ""
 
@@ -99,7 +106,7 @@ git checkout tags/0.3.1-beta
 
 - journalctl -u nexus.service -f -n 100
 
-**2. Important note** 
+**2. Important Note** 
 
 - Delete all Nexus Node running service
 
