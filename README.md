@@ -73,8 +73,6 @@ cd ~/.nexus/network-api && \
 git fetch --all --tags && \
 LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1)) && \
 git checkout $LATEST_TAG && \
-cargo clean && \
-cargo build --release && \
 sudo systemctl daemon-reload && \
 sudo systemctl restart nexus.service
 ```
