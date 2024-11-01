@@ -1,0 +1,282 @@
+stable-x86_64-unknown-linux-gnu updated - rustc 1.82.0 (f6e511eec 2024-10-15) (from rustc 1.81.0 (eeb90cda1 2024-09-04))
+info: cleaning up downloads & tmp directories
+Rust version:
+rustc 1.82.0 (f6e511eec 2024-10-15)
+Installing Nexus Prover...
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   893  100   893    0     0   1754      0 --:--:-- --:--:-- --:--:--  1754
+rustc 1.82.0 (f6e511eec 2024-10-15)
+Do you agree to the Nexus Beta Terms of Use (https://nexus.xyz/terms-of-use)? (Y/n) y
+Cloning into 'network-api'...
+remote: Enumerating objects: 190, done.
+remote: Counting objects: 100% (89/89), done.
+remote: Compressing objects: 100% (62/62), done.
+Receiving objects: 100% (190/190), 83.45 KiB | 949.00 KiB/s, done.
+remote: Total 190 (delta 39), reused 34 (delta 15), pack-reused 101 (from 1)
+Resolving deltas: 100% (79/79), done.
+    Updating crates.io index
+     Locking 1 package to latest compatible version
+    Updating nexus-network v0.1.0 (/root/.nexus/network-api/clients/cli) -> v0.3.1
+   Compiling proc-macro2 v1.0.86
+   Compiling unicode-ident v1.0.12
+   Compiling libc v0.2.155
+   Compiling cfg-if v1.0.0
+   Compiling autocfg v1.3.0
+   Compiling version_check v0.9.5
+   Compiling typenum v1.17.0
+   Compiling once_cell v1.19.0
+   Compiling generic-array v0.14.7
+   Compiling subtle v2.6.1
+   Compiling ppv-lite86 v0.2.17
+   Compiling num-traits v0.2.19
+   Compiling pin-project-lite v0.2.14
+   Compiling crossbeam-utils v0.8.20
+   Compiling quote v1.0.36
+   Compiling syn v2.0.71
+   Compiling getrandom v0.2.15
+   Compiling ahash v0.8.11
+   Compiling rand_core v0.6.4
+   Compiling rand_chacha v0.3.1
+   Compiling crossbeam-epoch v0.9.18
+   Compiling either v1.13.0
+   Compiling rand v0.8.5
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling paste v1.0.15
+   Compiling zerocopy v0.7.35
+   Compiling digest v0.10.7
+   Compiling rayon-core v1.12.1
+   Compiling jobserver v0.1.32
+   Compiling crossbeam-deque v0.8.5
+   Compiling num-integer v0.1.46
+   Compiling syn v1.0.109
+   Compiling arrayvec v0.7.6
+   Compiling cc v1.1.5
+   Compiling num-bigint v0.4.6
+   Compiling allocator-api2 v0.2.18
+   Compiling pkg-config v0.3.30
+   Compiling rayon v1.10.0
+   Compiling hashbrown v0.14.5
+   Compiling tracing-core v0.1.32
+   Compiling itertools v0.12.1
+   Compiling bytes v1.6.1
+   Compiling ark-std v0.4.0
+   Compiling memchr v2.7.4
+   Compiling futures-core v0.3.30
+   Compiling slab v0.4.9
+   Compiling lock_api v0.4.12
+   Compiling futures-sink v0.3.30
+   Compiling parking_lot_core v0.9.10
+   Compiling spin v0.9.8
+   Compiling smallvec v1.13.2
+   Compiling lazy_static v1.5.0
+   Compiling itoa v1.0.11
+   Compiling vcpkg v0.2.15
+   Compiling zeroize_derive v1.4.2
+   Compiling ark-serialize-derive v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling ark-ff-macros v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling ark-ff-asm v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling ark-serialize v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling tracing-attributes v0.1.27
+   Compiling zeroize v1.8.1
+   Compiling serde v1.0.207
+   Compiling anyhow v1.0.86
+   Compiling scopeguard v1.2.0
+   Compiling openssl-sys v0.9.103
+   Compiling serde_derive v1.0.207
+   Compiling radium v0.7.0
+   Compiling parking_lot v0.12.3
+   Compiling futures-macro v0.3.30
+   Compiling tokio-macros v2.3.0
+   Compiling futures-channel v0.3.30
+   Compiling derivative v2.2.0
+   Compiling mio v0.8.11
+   Compiling tracing v0.1.40
+   Compiling num_cpus v1.16.0
+   Compiling signal-hook-registry v1.4.2
+   Compiling socket2 v0.5.7
+   Compiling fnv v1.0.7
+   Compiling pin-utils v0.1.0
+   Compiling tap v1.0.1
+   Compiling cpufeatures v0.2.12
+   Compiling futures-task v0.3.30
+   Compiling futures-io v0.3.30
+   Compiling wyz v0.5.1
+   Compiling http v1.1.0
+   Compiling futures-util v0.3.30
+   Compiling tokio v1.38.1
+   Compiling tracing-subscriber v0.2.25
+   Compiling zstd-sys v2.0.13+zstd.1.5.6 (https://github.com/gyscos/zstd-rs#59e1da7f)
+   Compiling ark-ff v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling funty v2.0.0
+   Compiling bitvec v1.0.1
+   Compiling foreign-types-shared v0.1.1
+   Compiling keccak v0.1.5
+   Compiling heck v0.5.0
+   Compiling log v0.4.22
+   Compiling openssl v0.10.66
+   Compiling byteorder v1.5.0
+   Compiling httparse v1.9.4
+   Compiling getrandom v0.1.16
+   Compiling thiserror v1.0.63
+   Compiling ff v0.13.0
+   Compiling foreign-types v0.3.2
+   Compiling openssl-macros v0.1.1
+   Compiling thiserror-impl v1.0.63
+   Compiling tinyvec_macros v0.1.1
+   Compiling arrayref v0.3.8
+   Compiling native-tls v0.2.12
+   Compiling bitflags v2.6.0
+   Compiling constant_time_eq v0.3.1
+   Compiling utf8parse v0.2.2
+   Compiling anstyle-parse v0.2.4
+   Compiling blake2b_simd v1.0.2
+   Compiling prost-derive v0.13.1
+   Compiling tinyvec v1.8.0
+   Compiling group v0.13.0
+   Compiling sha2 v0.10.8
+   Compiling blake2 v0.10.6
+   Compiling ark-poly v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling ark-relations v0.4.0
+   Compiling ark-snark v0.4.0
+   Compiling generic-array v0.12.4
+   Compiling percent-encoding v2.3.1
+   Compiling typeid v1.0.2
+   Compiling anstyle-query v1.1.0
+   Compiling rustix v0.38.34
+   Compiling static_assertions v1.1.0
+   Compiling anstyle v1.0.7
+   Compiling byte-tools v0.3.1
+   Compiling colorchoice v1.0.1
+   Compiling openssl-probe v0.1.5
+   Compiling is_terminal_polyfill v1.70.0
+   Compiling equivalent v1.0.1
+   Compiling indexmap v2.2.6
+   Compiling anstream v0.6.14
+   Compiling ark-ec v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling block-padding v0.1.5
+   Compiling pasta_curves v0.5.1
+   Compiling form_urlencoded v1.2.1
+   Compiling rand_core v0.5.1
+   Compiling unicode-normalization v0.1.23
+   Compiling tokio-util v0.7.11
+   Compiling http-body v1.0.1
+   Compiling pin-project-internal v1.1.5
+   Compiling regex-syntax v0.8.4
+   Compiling unicode-bidi v0.3.15
+   Compiling ark-r1cs-std v0.4.0 (https://github.com/arkworks-rs/r1cs-std/?rev=2ca3bd7#2ca3bd7d)
+   Compiling prettyplease v0.2.20
+   Compiling atomic-waker v1.1.2
+   Compiling linux-raw-sys v0.4.14
+   Compiling clap_lex v0.7.1
+   Compiling strsim v0.11.1
+   Compiling block-padding v0.2.1
+   Compiling halo2curves v0.3.2 (https://github.com/privacy-scaling-explorations/halo2curves?tag=0.3.2#9f5c5081)
+   Compiling try-lock v0.2.5
+   Compiling want v0.3.1
+   Compiling clap_builder v4.5.9
+   Compiling block-buffer v0.9.0
+   Compiling prost v0.13.1
+   Compiling h2 v0.4.5
+   Compiling regex-automata v0.4.7
+   Compiling pin-project v1.1.5
+   Compiling idna v0.5.0
+   Compiling rand_chacha v0.2.2
+   Compiling block-buffer v0.7.3
+   Compiling digest v0.8.1
+   Compiling clap_derive v4.5.8
+   Compiling digest v0.9.0
+   Compiling minimal-lexical v0.2.1
+   Compiling alloc-no-stdlib v2.0.4
+   Compiling zstd-safe v6.0.6
+   Compiling tower-layer v0.3.3
+   Compiling tower-service v0.3.3
+   Compiling fastrand v2.1.0
+   Compiling opaque-debug v0.2.3
+   Compiling fixedbitset v0.4.2
+   Compiling opaque-debug v0.3.1
+   Compiling halo2curves v0.3.3 (https://github.com/privacy-scaling-explorations/halo2curves.git?rev=8e4cb9f0c66c864e8ca25da07f50ae95f664a5b7#8e4cb9f0)
+   Compiling sha3 v0.9.1
+   Compiling petgraph v0.6.5
+   Compiling sha3 v0.8.2
+   Compiling tempfile v3.10.1
+   Compiling clap v4.5.9
+   Compiling tower v0.4.13
+   Compiling alloc-stdlib v0.2.2
+   Compiling nom v7.1.3
+   Compiling erased-serde v0.4.5
+   Compiling hyper v1.4.1
+   Compiling rand v0.7.3
+   Compiling url v2.5.2
+   Compiling regex v1.10.5
+   Compiling prost-types v0.13.1
+   Compiling ark-bn254 v0.4.0 (https://github.com/arkworks-rs/curves/?rev=8c0256a#8c0256ac)
+   Compiling ark-bls12-381 v0.4.0 (https://github.com/arkworks-rs/curves/?rev=3fded1f#3fded1fb)
+   Compiling tokio-native-tls v0.3.1
+   Compiling merlin v3.0.0
+   Compiling async-trait v0.1.82
+   Compiling colored v2.1.0
+   Compiling itertools v0.10.5
+   Compiling zstd-safe v7.2.1 (https://github.com/gyscos/zstd-rs#59e1da7f)
+   Compiling ark-crypto-primitives v0.4.0 (https://github.com/arkworks-rs/crypto-primitives?rev=d27a5c8#d27a5c83)
+   Compiling pathdiff v0.2.1
+   Compiling serde_json v1.0.124
+   Compiling regex-syntax v0.6.29
+   Compiling ryu v1.0.18
+   Compiling multimap v0.8.3
+   Compiling prost-build v0.13.1
+   Compiling config v0.13.4
+   Compiling ark-poly-commit v0.4.0 (https://github.com/arkworks-rs/poly-commit/?rev=12f5529#12f5529c)
+   Compiling regex-automata v0.1.10
+   Compiling halo2_proofs v0.2.0 (https://github.com/privacy-scaling-explorations/halo2.git?tag=v2023_04_20#be955686)
+   Compiling hyper-util v0.1.7
+   Compiling serde-untagged v0.1.6
+   Compiling ark-spartan v0.4.0 (https://github.com/nexus-xyz/nexus-zkvm.git#7162d8dd)
+   Compiling brotli-decompressor v2.5.1
+   Compiling http-body-util v0.1.2
+   Compiling sha3 v0.10.8
+   Compiling sha1 v0.10.6
+   Compiling serde_wrapper v0.2.3 (https://github.com/nexus-xyz/nexus-zkvm.git#7162d8dd)
+   Compiling async-stream-impl v0.3.5
+   Compiling sharded-slab v0.1.7
+   Compiling thread_local v1.1.8
+   Compiling encoding_rs v0.8.34
+   Compiling iana-time-zone v0.1.60
+   Compiling mime v0.3.17
+   Compiling ipnet v2.9.0
+   Compiling sync_wrapper v1.0.1
+   Compiling chrono v0.4.38
+   Compiling tracing-subscriber v0.3.18
+   Compiling random_word v0.4.3
+   Compiling reqwest v0.12.5
+   Compiling async-stream v0.3.5
+   Compiling futures v0.3.30
+   Compiling ark-vesta v0.4.0 (https://github.com/arkworks-rs/curves/?rev=8c0256a#8c0256ac)
+   Compiling zstd v0.13.2 (https://github.com/gyscos/zstd-rs#59e1da7f)
+   Compiling nexus-core v0.2.3 (https://github.com/nexus-xyz/nexus-zkvm.git#7162d8dd)
+   Compiling tokio-tungstenite v0.23.1
+   Compiling ark-test-curves v0.4.2 (https://github.com/arkworks-rs/algebra/?rev=2a80c54#2a80c546)
+   Compiling uuid v1.10.0
+   Compiling jsonrpsee v0.23.2
+   Compiling home v0.5.9
+   Building [=======================> ] 351/352: nexus prover (bind)
+   
+Finished `release` profile [optimized] target(s) in 18m 02s
+Running `target/release/prover beta.orchestrator.nexus.xyz`
+Connected.
+Your assigned prover identifier is xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Network stats are available at https://beta.nexus.xyz/.
+Received a 21060 byte program to prove with 3 bytes of input
+Program trace is 196 steps. Proving 10 steps starting at 28...
+Proved step 28 at 0.93 proof cycles/sec.
+Proved step 29 at 0.47 proof cycles/sec.
+Proved step 30 at 1.25 proof cycles/sec.
+Proved step 31 at 0.54 proof cycles/sec.
+Proved step 32 at 0.85 proof cycles/sec.
+Proved step 33 at 0.74 proof cycles/sec.
+Proved step 34 at 0.50 proof cycles/sec.
+Proved step 35 at 0.47 proof cycles/sec.
+Proved step 36 at 0.27 proof cycles/sec.
+Proved step 37 at 0.30 proof cycles/sec.
+Proof sent! Overall speed was 0.50 proof cycles/sec.
