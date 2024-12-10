@@ -2,8 +2,10 @@
 
 # A Complete Guide Nexus Testnet Node - Fix Issue Nexus Labs (Prover Network)
 
-The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security.
-Read this step to runnig Nexus node as Prover Network.
+The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security. Read this step to runnig Nexus node as Prover Network.
+
+> [!NOTE]
+> **Update**: 2024, 10 Dec for CLI prover-id binding
 
 ## Here We Go...Gas!!!
 `Is there incentivized?` ![Confirm](https://img.shields.io/badge/indicate-yes-brightgreen)
@@ -64,11 +66,35 @@ curl https://cli.nexus.xyz/ | sh
 
 > If you do not already have Rust, you will be prompted to install it.
 
-## 3. Getting an Error
+## 3. Update and Getting an Error
+
+**1. Update CLI for Binding Prover-id**
+
+If you have runtime at previous & now, please binding your prover-id
+
+- Go to https://beta.nexus.xyz/
+- Open w/ `CTRL` + `SHIFT` + `i` and go section `application` > `local storage` > check `flutter.proverid` and save
+- Open your ssh-vps-terminal, replace **YOUR_PROVER_ID** and use command to enter
+```
+echo "YOUR_PROVER_ID" > ~/.nexus/prover-id
+```
+> For example
+```diff
+- echo "12345aBCdE6789" > ~/.nexus/prover-id
+```
+- And now restart the systemctl nexus-service use command to enter
+
+```
+sudo systemctl restart nexus.service
+journalctl -u nexus.service -f -n 100
+```
+> Still wait, this having for syncing on website, check `Nexus Point` on section page.....
+
+![beta-nexus-xyz-12-10-2024_03_18_PM](https://github.com/user-attachments/assets/ed331dd9-3863-43d0-9e3a-aa5be82146c8)
+
+**2. Upgrade & restart service for network-api**
 
 logs: If have facing issue cargo/cycles etc `Proof sent! You proved at 0 Hz` try for the latest Api Network https://github.com/nexus-xyz/network-api/releases/
-
-**1. Upgrade & restart service for network-api**
 
 ```
 cd ~/.nexus/network-api && \
