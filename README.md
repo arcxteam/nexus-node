@@ -73,7 +73,7 @@ curl https://cli.nexus.xyz/ | sh
 If you have runtime at previous & now, please binding your prover-id
 
 - Go to https://beta.nexus.xyz/
-- Open w/ `CTRL` + `SHIFT` + `i` and go section `application` > `local storage` > check `flutter.proverid` and save
+- Open w/ `CTRL`+`SHIFT`+`i` and go section `application` > `local storage` > check `flutter.proverid` and save
 - Open your ssh-vps-terminal, replace **YOUR_PROVER_ID** and use command to enter
 ```
 echo "YOUR_PROVER_ID" > ~/.nexus/prover-id
