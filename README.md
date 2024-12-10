@@ -46,7 +46,7 @@ If you don't have these dependencies already, install them first.
 
 ```
 sudo apt update && sudo apt upgrade -y 
-sudo apt install build-essential pkg-config libssl-dev git-all
+sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 ```
 ## 2. Start Install
 
