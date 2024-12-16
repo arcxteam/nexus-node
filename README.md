@@ -54,7 +54,7 @@ sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 
 **1. Auto installing**
 
-```
+```bash
 curl sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus.sh | bash
 ```
 
@@ -94,15 +94,18 @@ journalctl -u nexus.service -f -n 100
 
 **2. Upgrade & restart service for network-api**
 
-logs: If have facing issue cargo/cycles etc `Proof sent! You proved at 0 Hz` try for the latest Api Network https://github.com/nexus-xyz/network-api/releases/
+logs: If have facing issue cargo/cycles etc `Proof sent! You proved at 0 Hz` try `git tag -l` for the latest Api Network https://github.com/nexus-xyz/network-api/releases/
 
 ```
 cd ~/.nexus/network-api && \
 git fetch --all --tags && \
 LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1)) && \
 git checkout $LATEST_TAG && \
+cd ~/.nexus/network-api/clients/cli && \
+cargo build --release && \
 sudo systemctl daemon-reload && \
-sudo systemctl restart nexus.service
+sudo systemctl restart nexus.service && \
+sudo journalctl -u nexus.service -f -n 100
 ```
 
 ![Desktop-screenshot-10-27-2024_02_16_PM](https://github.com/user-attachments/assets/d79d1b01-07d0-4589-8e2f-a36349ef986a)
