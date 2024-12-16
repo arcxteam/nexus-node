@@ -62,6 +62,8 @@ EOF
 # Fungsi untuk memperbarui Nexus Network API ke versi terbaru
 update_nexus_api() {
     echo "Checking for updates in Nexus Network API..."
+    
+    # Pindah ke direktori utama repository network-api
     cd ~/.nexus/network-api
 
     # Mengambil semua pembaruan terbaru dari repository
@@ -73,9 +75,13 @@ update_nexus_api() {
     # Checkout ke versi terbaru
     git checkout $LATEST_TAG
 
+    # Pindah ke direktori yang berisi Cargo.toml
+    cd ~/.nexus/network-api/clients/cli
+
     # Membersihkan dan membangun ulang proyek dengan versi terbaru
     cargo clean
     cargo build --release
+
     echo "Nexus Network API updated to the latest version ($LATEST_TAG)."
 }
 
