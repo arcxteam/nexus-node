@@ -5,10 +5,11 @@
 The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security. Read this step to runnig Nexus node as Prover Network.
 
 > [!NOTE]
-> **Update**: 2024, 10 Dec for CLI prover-id binding
+> **Update**: 2024, 10 Dec for CLI prover-id binding ![Confirm](https://img.shields.io/badge/Testnet_1-END_-red)
+> **Update**; 2025, 19 Feb CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_2-ONGOING_-brightgreen)
 
 ## Here We Go...Gas!!!
-`Is there incentivized?` ![Confirm](https://img.shields.io/badge/indicate-yes-brightgreen)
+`Is there incentivized?` ![Confirm](https://img.shields.io/badge/Confirm-yes-brightgreen)
 
 > [!IMPORTANT]
 > What incentives do you offer for contributing to the network? At this time, contributors receive recognition through public leaderboards. Nexus may implement additional incentives in a future release. Read here https://nexus.xyz/network#network-faqs
@@ -102,6 +103,7 @@ git fetch --all --tags && \
 LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1)) && \
 git checkout $LATEST_TAG && \
 cd ~/.nexus/network-api/clients/cli && \
+cargo clean && \
 cargo build --release && \
 sudo systemctl daemon-reload && \
 sudo systemctl restart nexus.service && \
