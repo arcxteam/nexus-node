@@ -41,7 +41,7 @@ After=network-online.target
 Type=simple
 User=root
 WorkingDirectory=/root/.nexus/network-api/clients/cli
-ExecStart=/root/.cargo/bin/cargo run --release --bin prover -- beta.orchestrator.nexus.xyz
+ExecStart=/root/.cargo/bin/cargo run --release --bin nexus-network -- beta.orchestrator.nexus.xyz
 Restart=always
 RestartSec=11
 LimitNOFILE=65000
@@ -91,7 +91,7 @@ setup_nexus_zkvm() {
 
     # Set up target dan install nexus-tools dari repository Nexus
     rustup target add riscv32i-unknown-none-elf
-    cargo install --git https://github.com/nexus-xyz/nexus-zkvm nexus-tools --tag 'v1.0.0'
+    cargo install --git https://github.com/nexus-xyz/nexus-zkvm nexus-tools --tag 'v0.2.4'
 
     # Membuat project Nexus ZKVM
     cargo nexus new nexus-project
