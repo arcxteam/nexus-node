@@ -182,7 +182,7 @@ echo "Memperbaiki peringatan impor yang tidak digunakan..."
 fix_unused_import
 
 # Test Nexus Prover dan cek kesalahan
-if ! cargo run --release --bin prover -- beta.orchestrator.nexus.xyz; then
+if ! cargo run --release --bin nexus-network -- beta.orchestrator.nexus.xyz; then
     echo "Kesalahan terdeteksi, membersihkan dan menginstal ulang..."
     cleanup
     install_nexus
