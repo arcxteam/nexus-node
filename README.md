@@ -69,29 +69,32 @@ curl https://cli.nexus.xyz/ | sh
 
 ## 3. Update and Getting an Error
 
-**1. Update CLI for Binding Prover-id**
+**1. Update CLI for Binding a node-id**
 
-If you have runtime at previous & now, please binding your prover-id
+If you have runtime at **previous & run now**, please binding your **node-id** for manual without auto installer skrip `nexus.sh` above. so the step here
 
-- Go to https://app.nexus.xyz/
-- Open w/ `CTRL`+`SHIFT`+`i` and go section `application` > `local storage` > check `flutter.proverid` and save
-- Open your ssh-vps-terminal, replace **YOUR_PROVER_ID** and use command to enter
+- Go to https://app.nexus.xyz/nodes
+- Open and wait the dashboard showing all and go section `add node` > `add CLI node` > check `copy` and done
+- Open your ssh-vps-terminal, add/input your **YOUR_NODE_ID** and use command to enter
 ```
-echo "YOUR_PROVER_ID" > ~/.nexus/prover-id
+echo "YOUR_NODE_ID" > /root/.nexus/node-id
 ```
-> For example
+> For example 
 ```diff
-- echo "12345aBCdE6789" > ~/.nexus/prover-id
+- echo "6317901" > ~/.nexus/node-id
 ```
 - And now restart the systemctl nexus-service use command to enter
 
 ```
+sudo systemctl daemon-reload
 sudo systemctl restart nexus.service
-journalctl -u nexus.service -f -n 100
+sudo journalctl -u nexus.service -f -n 100
 ```
 > Still wait, this having for syncing on website, check `Nexus Point` on section page.....
 
-![beta-nexus-xyz-12-10-2024_03_18_PM](https://github.com/user-attachments/assets/ed331dd9-3863-43d0-9e3a-aa5be82146c8)
+![image](https://github.com/user-attachments/assets/a2d5e515-df98-4701-93aa-5df3ceb26c57)
+
+![Desktop-screenshot-02-21-2025_12_57_AM](https://github.com/user-attachments/assets/ea0abe49-3f66-4c98-8d30-20443ca0cef3)
 
 **2. Upgrade & restart service for network-api**
 
@@ -110,15 +113,14 @@ sudo systemctl restart nexus.service && \
 sudo journalctl -u nexus.service -f -n 100
 ```
 
-![Desktop-screenshot-10-27-2024_02_16_PM](https://github.com/user-attachments/assets/d79d1b01-07d0-4589-8e2f-a36349ef986a)
-
 ## 4. Usefull Commands
 
 **1. Based-on ran Nexus Labs node**
 
-`Check & Save the Prover-id`
+`Check & Save the Prover-id & Node-id`
 
 - cat $HOME/.nexus/prover-id; echo ""
+- cat $HOME/.nexus/node-id; echo ""
 
 `Start and enable the service`
 
@@ -128,14 +130,14 @@ sudo journalctl -u nexus.service -f -n 100
 - sudo systemctl start nexus.service
 - sudo systemctl restart nexus.service
 
-`Checking the status`
+`Checking the status service`
 
 - sudo systemctl status nexus.service
 - ps aux | grep nexus
 
-`Monitor the logs`
+`Monitor the status logs`
 
-- journalctl -u nexus.service -f -n 100
+- sudo journalctl -u nexus.service -f -n 100
 
 **2. Important Note** 
 
