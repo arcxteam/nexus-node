@@ -67,17 +67,33 @@ EOF
 # Fungsi untuk membuat wrapper.sh
 create_wrapper_script() {
     WRAPPER_SCRIPT="/root/.nexus/network-api/clients/cli/wrapper.sh"
+    WRAPPER_DIR=$(dirname "$WRAPPER_SCRIPT")
+    
+    echo "Creating wrapper script directory if not exists..."
+    mkdir -p "$WRAPPER_DIR"
     
     if [ ! -f "$WRAPPER_SCRIPT" ]; then
         echo "Creating wrapper script for Nexus..."
-        sudo tee $WRAPPER_SCRIPT > /dev/null <<EOF
+        cat <<EOF | sudo tee "$WRAPPER_SCRIPT" > /dev/null
 #!/bin/bash
 # Skrip ini memberikan input otomatis ke program nexus-network
-echo -e "y\n2" | /root/.nexus/network-api/clients/cli/target/release/nexus-network start --env beta
+
+# Navigate to the correct directory
+cd /root/.nexus/network-api/clients/cli
+
+# Check if binary exists
+if [ ! -f "./target/release/nexus-network" ]; then
+    echo "Error: nexus-network binary not found!"
+    exit 1
+fi
+
+# Run with automated input
+echo -e "y\n2" | ./target/release/nexus-network start --env beta
 EOF
-        sudo chmod +x $WRAPPER_SCRIPT
+        sudo chmod +x "$WRAPPER_SCRIPT"
+        echo "Wrapper script created at $WRAPPER_SCRIPT"
     else
-        echo "Wrapper script already exists. Skipping creation."
+        echo "Wrapper script already exists at $WRAPPER_SCRIPT"
     fi
 }
 
@@ -86,18 +102,33 @@ update_nexus_api() {
     echo "Checking for updates in Nexus Network API..."
     
     # Pindah ke direktori utama repository network-api
-    cd ~/.nexus/network-api
+    cd ~/.nexus/network-api || { echo "Failed to change directory to ~/.nexus/network-api"; exit 1; }
+    
     # Mengambil semua pembaruan terbaru dari repository
-    git fetch --all --tags
+    git fetch --all --tags --force
+    
     # Mendapatkan tag rilis terbaru dari repository
     LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+    if [ -z "$LATEST_TAG" ]; then
+        echo "Error: Could not find latest tag!"
+        exit 1
+    fi
+    
+    echo "Latest tag found: $LATEST_TAG"
+    
+    # Stash any local changes
+    git stash
+    
     # Checkout ke versi terbaru
-    git checkout $LATEST_TAG
+    git checkout "$LATEST_TAG"
+    
     # Pindah ke direktori yang berisi Cargo.toml
-    cd ~/.nexus/network-api/clients/cli
+    cd ~/.nexus/network-api/clients/cli || { echo "Failed to change directory to cli"; exit 1; }
+    
     # Membersihkan dan membangun ulang proyek dengan versi terbaru
     cargo clean
     cargo build --release
+    
     echo "Nexus Network API updated to the latest version ($LATEST_TAG)."
 }
 
@@ -115,7 +146,8 @@ create_node_id_file() {
         fi
         
         echo "Saving Node ID to $NODE_ID_FILE..."
-        echo "$NODE_ID" | sudo tee $NODE_ID_FILE > /dev/null
+        mkdir -p "$(dirname "$NODE_ID_FILE")"
+        echo "$NODE_ID" | sudo tee "$NODE_ID_FILE" > /dev/null
     else
         echo "Node ID file already exists. Skipping creation."
     fi
@@ -129,10 +161,10 @@ setup_nexus_zkvm() {
     cargo install --git https://github.com/nexus-xyz/nexus-zkvm nexus-tools --tag 'v0.2.4'
     # Membuat project Nexus ZKVM
     cargo nexus new nexus-project
-    cd nexus-project/src
-    rm -rf main.rs
+    cd nexus-project/src || { echo "Failed to enter nexus-project/src"; exit 1; }
+    rm -f main.rs
     # Menulis program contoh ke main.rs
-    cat <<EOT >> main.rs
+    cat <<EOT > main.rs
 #![no_std]
 #![no_main]
 fn fib(n: u32) -> u32 {
@@ -149,7 +181,7 @@ fn main() {
     assert_eq!(result, 13);
 }
 EOT
-    cd ..
+    cd ../..
 }
 
 # Fungsi untuk menjalankan, membuktikan, dan memverifikasi program ZKVM
@@ -165,14 +197,15 @@ run_nexus_program() {
 # Fungsi untuk memperbaiki peringatan impor yang tidak digunakan
 fix_unused_import() {
     echo "Memperbaiki peringatan impor yang tidak digunakan..."
-    sed -i 's/^use std::env;/\/\/ use std::env;/' /root/.nexus/network-api/clients/cli/src/prover.rs
+    sed -i 's/^use std::env;/\/\/ use std::env;/' /root/.nexus/network-api/clients/cli/src/prover.rs 2>/dev/null || \
+    echo "Warning: Could not modify prover.rs (file may not exist)"
 }
 
 # Fungsi untuk membersihkan layanan dan file
 cleanup() {
     echo "Menghentikan dan menonaktifkan layanan Nexus..."
-    sudo systemctl stop nexus.service
-    sudo systemctl disable nexus.service
+    sudo systemctl stop nexus.service 2>/dev/null || true
+    sudo systemctl disable nexus.service 2>/dev/null || true
     echo "Menghapus file layanan..."
     sudo rm -f /etc/systemd/system/nexus.service
     echo "Memuat ulang daemon systemd..."
@@ -184,65 +217,76 @@ ensure_service_running() {
     if ! systemctl is-active --quiet nexus.service; then
         echo "Nexus service tidak berjalan. Mencoba memulai..."
         sudo systemctl start nexus.service
+        
+        # Tunggu sebentar untuk memastikan service sudah mulai
+        sleep 5
+        
+        if ! systemctl is-active --quiet nexus.service; then
+            echo "Gagal memulai layanan Nexus. Memeriksa log..."
+            sudo journalctl -u nexus.service -n 50 --no-pager
+            return 1
+        fi
     fi
-    
-    if ! systemctl is-active --quiet nexus.service; then
-        echo "Gagal memulai layanan Nexus. Memeriksa log..."
-        sudo journalctl -u nexus.service -n 50 --no-pager
-    else
-        echo "Layanan Nexus berhasil dimulai."
+    echo "Layanan Nexus berjalan."
+    return 0
+}
+
+# Fungsi untuk memeriksa dan memulai ulang layanan
+restart_service_if_needed() {
+    if ! ensure_service_running; then
+        echo "Mencoba membangun ulang dan memulai layanan..."
+        cd ~/.nexus/network-api/clients/cli || return 1
+        cargo build --release
+        sudo systemctl restart nexus.service
+        ensure_service_running
     fi
 }
 
-# Eksekusi skrip dulu 😎
-echo "Membersihkan instalasi lama..."
-cleanup
-
-echo "Menginstal dependensi..."
-install_dependencies
-
-echo "Menginstal Rust..."
-install_rust
-
-echo "Menginstal Nexus Prover..."
-install_nexus_prover
-
-echo "Membuat file node-id..."
-create_node_id_file
-
-echo "Membuat wrapper.sh..."
-create_wrapper_script
-
-echo "Membuat file systemd..."
-create_systemd_service
-
-echo "Memeriksa pembaruan Nexus Network API..."
-update_nexus_api
-
-echo "Mengatur Nexus ZKVM..."
-setup_nexus_zkvm
-
-echo "Memperbaiki peringatan impor yang tidak digunakan..."
-fix_unused_import
-
-# Test Nexus Prover dan cek kesalahan
-if ! cargo run --release --bin nexus-network -- start --env beta; then
-    echo "Kesalahan terdeteksi, membersihkan dan menginstal ulang..."
+# Eksekusi utama
+main() {
+    echo "Membersihkan instalasi lama..."
     cleanup
+
+    echo "Menginstal dependensi..."
+    install_dependencies
+
+    echo "Menginstal Rust..."
+    install_rust
+
+    echo "Menginstal Nexus Prover..."
     install_nexus_prover
-else
-    echo "Prover berhasil dijalankan."
-fi
 
-echo "Memastikan layanan berjalan..."
-ensure_service_running
+    echo "Membuat file node-id..."
+    create_node_id_file
 
-# Menjalankan program Nexus dan memverifikasi bukti
-echo "Menjalankan dan membuktikan Nexus program..."
-run_nexus_program
+    echo "Memeriksa pembaruan Nexus Network API..."
+    update_nexus_api
 
-echo "Instalasi selesai. Memeriksa status layanan..."
-sudo systemctl status nexus.service
+    echo "Membuat wrapper.sh..."
+    create_wrapper_script
 
-echo "Mengikuti log untuk layanan nexus..."
-sudo journalctl -fu nexus.service -o cat
+    echo "Membuat file systemd..."
+    create_systemd_service
+
+    echo "Memperbaiki peringatan impor yang tidak digunakan..."
+    fix_unused_import
+
+    echo "Mengatur Nexus ZKVM..."
+    setup_nexus_zkvm
+
+    echo "Memastikan layanan berjalan..."
+    restart_service_if_needed
+
+    # Menjalankan program Nexus dan memverifikasi bukti
+    echo "Menjalankan dan membuktikan Nexus program..."
+    run_nexus_program
+
+    echo "Instalasi selesai. Memeriksa status layanan..."
+    sudo systemctl status nexus.service --no-pager
+
+    echo "Mengikuti log untuk layanan nexus..."
+    sudo journalctl -fu nexus.service -o cat
+}
+
+# Jalankan fungsi utama
+main
