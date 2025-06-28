@@ -6,7 +6,9 @@ The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable int
 
 > **Update**: 2024, 10 Dec for CLI prover-id binding ![Confirm](https://img.shields.io/badge/Testnet_1-END_-red)
 
-> **Update**; 2025, 19 Feb CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_2-ONGOING_-brightgreen)
+> **Update**; 2025, 19 Feb CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_2-CLOSED_-brightgreen)
+
+> **Update**; 2025, 23 JUNE CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_3-ONGOING_-brightgreen)
 
 ## Here We Go...Gas!!!
 `Is there incentivized?` ![Confirm](https://img.shields.io/badge/Confirm-yes-brightgreen)
@@ -104,6 +106,7 @@ logs: If have facing issue cargo/cycles etc `Proof sent! You proved at 0 Hz` try
 cd ~/.nexus/network-api && \
 git fetch --all --tags && \
 LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1)) && \
+git stash && \
 git checkout $LATEST_TAG && \
 cd ~/.nexus/network-api/clients/cli && \
 cargo clean && \
