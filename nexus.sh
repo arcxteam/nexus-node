@@ -27,7 +27,7 @@ install_rust() {
 # Fungsi untuk menginstal Nexus Prover
 install_nexus_prover() {
     echo "Installing Nexus Prover..."
-    sudo curl https://cli.nexus.xyz/install.sh | sh
+    sudo curl -sSL https://cli.nexus.xyz/ | NONINTERACTIVE=1 sh
     echo "Setting file ownership for Nexus..."
     sudo chown -R root:root /root/.nexus
 }
@@ -88,7 +88,7 @@ if [ ! -f "./target/release/nexus-network" ]; then
 fi
 
 # Run with automated input
-echo -e "y\n2" | ./target/release/nexus-network start --env beta
+echo -e "y\n2" | ./target/release/nexus-network start --node-id
 EOF
         sudo chmod +x "$WRAPPER_SCRIPT"
         echo "Wrapper script created at $WRAPPER_SCRIPT"
@@ -158,7 +158,7 @@ setup_nexus_zkvm() {
     echo "Setting up Nexus ZKVM environment..."
     # Set up target dan install nexus-tools dari repository Nexus
     rustup target add riscv32i-unknown-none-elf
-    cargo install --git https://github.com/nexus-xyz/nexus-zkvm nexus-tools --tag 'v0.2.4'
+    cargo install --git https://github.com/nexus-xyz/nexus-zkvm nexus-tools --tag 'v0.3.4'
     # Membuat project Nexus ZKVM
     cargo nexus new nexus-project
     cd nexus-project/src || { echo "Failed to enter nexus-project/src"; exit 1; }
