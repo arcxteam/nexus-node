@@ -5,7 +5,6 @@
 # Fungsi untuk memeriksa apakah terminal interaktif
 
 check_interactive() {
-# Hanya cek jika dijalankan langsung via pipe, bukan jika file sudah diunduh
 if [ ! -t 0 ] && [ ! -f “$0” ]; then
 echo “ERROR: Skrip ini harus dijalankan secara interaktif!”
 echo “Gunakan:”
@@ -50,40 +49,85 @@ echo “Setting file ownership for Nexus…”
 sudo chown -R root:root /root/.nexus
 }
 
-# Fungsi untuk membuat file systemd
+# Fungsi untuk membuat file node-id.txt dengan input interaktif
 
-create_systemd_service() {
-SERVICE_FILE=”/etc/systemd/system/nexus.service”
+create_node_id_file() {
+NODE_ID_FILE=”/root/.nexus/node-id.txt”
 
 ```
-if [ ! -f "$SERVICE_FILE" ]; then
-    echo "Creating systemd service file for Nexus..."
-    sudo tee $SERVICE_FILE > /dev/null <<EOF
-```
+# Pastikan direktori .nexus ada
+mkdir -p "/root/.nexus"
 
-[Unit]
-Description=Nexus Network
-Wants=network-online.target
-After=network-online.target
-
-[Service]
-Type=simple
-User=root
-WorkingDirectory=/root/.nexus/network-api/clients/cli
-ExecStart=/root/.nexus/network-api/clients/cli/wrapper.sh
-Restart=always
-RestartSec=11
-LimitNOFILE=65000
-
-[Install]
-WantedBy=multi-user.target
-EOF
+if [ ! -f "$NODE_ID_FILE" ]; then
+    echo ""
+    echo "================================================================"
+    echo "SETUP NODE ID DIPERLUKAN"
+    echo "================================================================"
+    echo "Node ID tidak ditemukan di $NODE_ID_FILE"
+    echo "Anda perlu mendapatkan Node ID dari website Nexus:"
+    echo ""
+    echo "1. Kunjungi https://app.nexus.xyz/nodes"
+    echo "2. Login dengan wallet Anda"
+    echo "3. Buat node baru atau pilih node yang sudah ada"
+    echo "4. Salin Node ID yang ditampilkan"
+    echo ""
+    echo "================================================================"
+    echo ""
+    
+    # Loop sampai input valid
+    while true; do
+        echo -n "Masukkan Node ID Anda: "
+        read NODE_ID
+        
+        # Validasi input
+        if [ -z "$NODE_ID" ]; then
+            echo "Node ID tidak boleh kosong. Silakan coba lagi."
+            echo ""
+            continue
+        fi
+        
+        # Hilangkan spasi di awal dan akhir
+        NODE_ID=$(echo "$NODE_ID" | tr -d '[:space:]')
+        
+        # Validasi format dasar (minimal 10 karakter)
+        if [ ${#NODE_ID} -lt 10 ]; then
+            echo "Node ID terlalu pendek. Pastikan Anda menyalin seluruh ID."
+            echo ""
+            continue
+        fi
+        
+        # Konfirmasi
+        echo ""
+        echo "Node ID yang Anda masukkan: $NODE_ID"
+        echo -n "Apakah ini benar? (y/n): "
+        read confirm
+        
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            break
+        fi
+        echo ""
+    done
+    
+    echo ""
+    echo "Menyimpan Node ID ke $NODE_ID_FILE..."
+    echo "$NODE_ID" > "$NODE_ID_FILE"
+    
+    # Verifikasi file tersimpan
+    if [ -f "$NODE_ID_FILE" ]; then
+        echo "Node ID berhasil disimpan!"
+        echo "Lokasi file: $NODE_ID_FILE"
+    else
+        echo "Gagal menyimpan Node ID!"
+        exit 1
+    fi
 else
-echo “Service file already exists. Skipping creation.”
+    echo "File Node ID sudah ada. Melanjutkan..."
+    NODE_ID_CONTENT=$(cat "$NODE_ID_FILE" | tr -d '[:space:]')
+    echo "Node ID Anda: $NODE_ID_CONTENT"
 fi
-echo “Reloading systemd daemon and enabling Nexus service…”
-sudo systemctl daemon-reload
-sudo systemctl enable nexus.service
+echo ""
+```
+
 }
 
 # Fungsi untuk membuat wrapper.sh
@@ -97,9 +141,8 @@ NODE_ID_FILE=”/root/.nexus/node-id.txt”
 echo "Creating wrapper script directory if not exists..."
 mkdir -p "$WRAPPER_DIR"
 
-if [ ! -f "$WRAPPER_SCRIPT" ]; then
-    echo "Creating wrapper script for Nexus..."
-    cat <<EOF | sudo tee "$WRAPPER_SCRIPT" > /dev/null
+echo "Creating wrapper script for Nexus..."
+cat > "$WRAPPER_SCRIPT" << 'EOF'
 ```
 
 #!/bin/bash
@@ -119,6 +162,7 @@ fi
 
 # Check if node-id.txt exists
 
+NODE_ID_FILE=”/root/.nexus/node-id.txt”
 if [ ! -f “$NODE_ID_FILE” ]; then
 echo “Error: node-id.txt not found at $NODE_ID_FILE!”
 exit 1
@@ -139,13 +183,50 @@ echo “Using Node ID: $NODE_ID”
 
 # Run with automated input using the node-id from file
 
-echo -e “y\n2\n$NODE_ID” | ./target/release/nexus-network start –-node-id
+echo -e “y\n2\n$NODE_ID” | ./target/release/nexus-network start –node-id
 EOF
-sudo chmod +x “$WRAPPER_SCRIPT”
-echo “Wrapper script created at $WRAPPER_SCRIPT”
-else
-echo “Wrapper script already exists at $WRAPPER_SCRIPT”
-fi
+
+```
+chmod +x "$WRAPPER_SCRIPT"
+echo "Wrapper script created at $WRAPPER_SCRIPT"
+```
+
+}
+
+# Fungsi untuk membuat file systemd
+
+create_systemd_service() {
+SERVICE_FILE=”/etc/systemd/system/nexus.service”
+
+```
+echo "Creating systemd service file for Nexus..."
+cat > "$SERVICE_FILE" << 'EOF'
+```
+
+[Unit]
+Description=Nexus Network
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/.nexus/network-api/clients/cli
+ExecStart=/root/.nexus/network-api/clients/cli/wrapper.sh
+Restart=always
+RestartSec=11
+LimitNOFILE=65000
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+```
+echo "Reloading systemd daemon and enabling Nexus service..."
+sudo systemctl daemon-reload
+sudo systemctl enable nexus.service
+```
+
 }
 
 # Fungsi untuk memperbarui Nexus Network API ke versi terbaru
@@ -187,86 +268,6 @@ echo "Nexus Network API updated to the latest version ($LATEST_TAG)."
 
 }
 
-# Fungsi untuk membuat file node-id.txt dengan input interaktif
-
-create_node_id_file() {
-NODE_ID_FILE=”/root/.nexus/node-id.txt”
-
-```
-# Pastikan direktori .nexus ada
-mkdir -p "/root/.nexus"
-
-if [ ! -f "$NODE_ID_FILE" ]; then
-    echo ""
-    echo "================================================================"
-    echo "SETUP NODE ID DIPERLUKAN"
-    echo "================================================================"
-    echo "Node ID tidak ditemukan! Anda perlu mendapatkan Node ID dari website Nexus:"
-    echo ""
-    echo "1. Kunjungi https://app.nexus.xyz/nodes"
-    echo "2. Login dengan wallet Anda"
-    echo "3. Buat node baru atau pilih node yang sudah ada"
-    echo "4. Salin Node ID yang ditampilkan"
-    echo ""
-    echo "================================================================"
-    echo ""
-    
-    # Loop sampai input valid
-    while true; do
-        echo -n "Masukkan Node ID Anda: "
-        read NODE_ID
-        
-        # Validasi input
-        if [ -z "$NODE_ID" ]; then
-            echo "❌ Node ID tidak boleh kosong. Silakan coba lagi."
-            echo ""
-            continue
-        fi
-        
-        # Hilangkan spasi di awal dan akhir
-        NODE_ID=$(echo "$NODE_ID" | tr -d '[:space:]')
-        
-        # Validasi format dasar (minimal 10 karakter)
-        if [ ${#NODE_ID} -lt 10 ]; then
-            echo "❌ Node ID terlalu pendek. Pastikan Anda menyalin seluruh ID."
-            echo ""
-            continue
-        fi
-        
-        # Konfirmasi
-        echo ""
-        echo "Node ID yang Anda masukkan: $NODE_ID"
-        echo -n "Apakah ini benar? (y/n): "
-        read confirm
-        
-        if [[ "$confirm" =~ ^[Yy]$ ]]; then
-            break
-        fi
-        echo ""
-    done
-    
-    echo ""
-    echo "💾 Menyimpan Node ID ke $NODE_ID_FILE..."
-    echo "$NODE_ID" > "$NODE_ID_FILE"
-    
-    # Verifikasi file tersimpan
-    if [ -f "$NODE_ID_FILE" ]; then
-        echo "✅ Node ID berhasil disimpan!"
-        echo "📁 Lokasi file: $NODE_ID_FILE"
-    else
-        echo "❌ Gagal menyimpan Node ID!"
-        exit 1
-    fi
-else
-    echo "📁 File Node ID sudah ada. Melanjutkan..."
-    NODE_ID_CONTENT=$(cat "$NODE_ID_FILE" | tr -d '[:space:]')
-    echo "🔑 Node ID Anda: $NODE_ID_CONTENT"
-fi
-echo ""
-```
-
-}
-
 # Fungsi untuk mengatur Nexus ZKVM
 
 setup_nexus_zkvm() {
@@ -279,7 +280,7 @@ cargo nexus new nexus-project
 cd nexus-project/src || { echo “Failed to enter nexus-project/src”; exit 1; }
 rm -f main.rs
 # Menulis program contoh ke main.rs
-cat <<EOT > main.rs
+cat > main.rs << ‘EOF’
 #![no_std]
 #![no_main]
 fn fib(n: u32) -> u32 {
@@ -295,7 +296,7 @@ let n = 7;
 let result = fib(n);
 assert_eq!(result, 13);
 }
-EOT
+EOF
 cd ../..
 }
 
@@ -314,8 +315,7 @@ cargo nexus verify
 
 fix_unused_import() {
 echo “Memperbaiki peringatan impor yang tidak digunakan…”
-sed -i ‘s/^use std::env;/// use std::env;/’ /root/.nexus/network-api/clients/cli/src/prover.rs 2>/dev/null ||   
-echo “Warning: Could not modify prover.rs (file may not exist)”
+sed -i ‘s/^use std::env;/// use std::env;/’ /root/.nexus/network-api/clients/cli/src/prover.rs 2>/dev/null || echo “Warning: Could not modify prover.rs”
 }
 
 # Fungsi untuk membersihkan layanan dan file
@@ -368,62 +368,60 @@ fi
 # Eksekusi utama
 
 main() {
-# Pastikan skrip dijalankan secara interaktif jika diperlukan
 check_interactive
 
 ```
 echo "================================================================"
-echo "🚀 NEXUS NODE INSTALLATION SCRIPT"
+echo "NEXUS NODE INSTALLATION SCRIPT"
 echo "================================================================"
 echo ""
 
-echo "🧹 Membersihkan instalasi lama..."
+echo "Membersihkan instalasi lama..."
 cleanup
 
-echo "📦 Menginstal dependensi..."
+echo "Menginstal dependensi..."
 install_dependencies
 
-echo "🦀 Menginstal Rust..."
+echo "Menginstal Rust..."
 install_rust
 
-echo "⚡ Menginstal Nexus Prover..."
+echo "Menginstal Nexus Prover..."
 install_nexus_prover
 
-echo "🔑 Setup Node ID..."
+echo "Setup Node ID..."
 create_node_id_file
 
-echo "🔄 Memeriksa pembaruan Nexus Network API..."
+echo "Memeriksa pembaruan Nexus Network API..."
 update_nexus_api
 
-echo "📝 Membuat wrapper script..."
+echo "Membuat wrapper script..."
 create_wrapper_script
 
-echo "🛠️ Membuat file systemd service..."
+echo "Membuat file systemd service..."
 create_systemd_service
 
-echo "🔧 Memperbaiki peringatan impor yang tidak digunakan..."
+echo "Memperbaiki peringatan impor yang tidak digunakan..."
 fix_unused_import
 
-echo "⚙️ Mengatur Nexus ZKVM..."
+echo "Mengatur Nexus ZKVM..."
 setup_nexus_zkvm
 
-echo "🚀 Memastikan layanan berjalan..."
+echo "Memastikan layanan berjalan..."
 restart_service_if_needed
 
-# Menjalankan program Nexus dan memverifikasi bukti
-echo "🔬 Menjalankan dan membuktikan Nexus program..."
+echo "Menjalankan dan membuktikan Nexus program..."
 run_nexus_program
 
 echo ""
 echo "================================================================"
-echo "✅ INSTALASI SELESAI!"
+echo "INSTALASI SELESAI!"
 echo "================================================================"
 echo ""
-echo "📊 Memeriksa status layanan..."
+echo "Memeriksa status layanan..."
 sudo systemctl status nexus.service --no-pager
 
 echo ""
-echo "📋 Mengikuti log untuk layanan nexus..."
+echo "Mengikuti log untuk layanan nexus..."
 echo "Press Ctrl+C to exit log view"
 echo ""
 sudo journalctl -fu nexus.service -o cat
