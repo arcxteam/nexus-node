@@ -132,24 +132,42 @@ update_nexus_api() {
     echo "Nexus Network API updated to the latest version ($LATEST_TAG)."
 }
 
-# Fungsi untuk membuat file node-id
+# Fungsi untuk membuat file node-id dengan input interaktif
 create_node_id_file() {
     NODE_ID_FILE="/root/.nexus/node-id"
     
     if [ ! -f "$NODE_ID_FILE" ]; then
-        echo "Node ID file not found. Please enter your Node ID (from the website):"
-        read -p "Enter Node ID: " NODE_ID
+        echo ""
+        echo "================================================================"
+        echo "Node ID tidak ditemukan!"
+        echo "Anda perlu mendapatkan Node ID dari website Nexus:"
+        echo "1. Kunjungi https://app.nexus.xyz/nodes"
+        echo "2. Login dengan wallet Anda"
+        echo "3. Buat node baru atau pilih node yang sudah ada"
+        echo "4. Salin Node ID yang ditampilkan"
+        echo "================================================================"
+        echo ""
         
-        if [ -z "$NODE_ID" ]; then
-            echo "Node ID cannot be empty. Exiting..."
-            exit 1
-        fi
+        while true; do
+            read -p "Masukkan Node ID Anda: " NODE_ID
+            
+            # Validasi dasar Node ID (minimal 10 karakter)
+            if [ -z "$NODE_ID" ]; then
+                echo "Node ID tidak boleh kosong. Silakan coba lagi."
+            elif [ ${#NODE_ID} -lt 10 ]; then
+                echo "Node ID terlalu pendek. Pastikan Anda menyalin seluruh ID."
+            else
+                break
+            fi
+        done
         
-        echo "Saving Node ID to $NODE_ID_FILE..."
+        echo "Menyimpan Node ID ke $NODE_ID_FILE..."
         mkdir -p "$(dirname "$NODE_ID_FILE")"
         echo "$NODE_ID" | sudo tee "$NODE_ID_FILE" > /dev/null
+        echo "Node ID berhasil disimpan!"
     else
-        echo "Node ID file already exists. Skipping creation."
+        echo "File Node ID sudah ada. Melanjutkan..."
+        echo "Node ID Anda: $(cat $NODE_ID_FILE)"
     fi
 }
 
@@ -256,6 +274,7 @@ main() {
     echo "Menginstal Nexus Prover..."
     install_nexus_prover
 
+    # PENTING: Meminta Node ID sebelum melanjutkan
     echo "Membuat file node-id..."
     create_node_id_file
 
