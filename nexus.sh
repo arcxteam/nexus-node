@@ -1,6 +1,18 @@
 #!/bin/bash
 # Gas bang 😂 jalankan pemasangan dependensi dan layanan
 
+# Fungsi untuk memeriksa apakah terminal interaktif
+check_interactive() {
+    if [ ! -t 0 ]; then
+        echo "ERROR: Skrip ini harus dijalankan secara interaktif!"
+        echo "Gunakan:"
+        echo "  curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus.sh -o nexus.sh"
+        echo "  chmod +x nexus.sh"
+        echo "  ./nexus.sh"
+        exit 1
+    fi
+}
+
 # Fungsi untuk menginstal dependensi
 install_dependencies() {
     echo "Updating packages..."
@@ -148,15 +160,28 @@ create_node_id_file() {
         echo "================================================================"
         echo ""
         
+        # Loop sampai input valid
         while true; do
             read -p "Masukkan Node ID Anda: " NODE_ID
             
-            # Validasi dasar Node ID (minimal 10 karakter)
+            # Validasi input
             if [ -z "$NODE_ID" ]; then
                 echo "Node ID tidak boleh kosong. Silakan coba lagi."
-            elif [ ${#NODE_ID} -lt 10 ]; then
+                continue
+            fi
+            
+            # Validasi format dasar (minimal 10 karakter)
+            if [ ${#NODE_ID} -lt 10 ]; then
                 echo "Node ID terlalu pendek. Pastikan Anda menyalin seluruh ID."
-            else
+                continue
+            fi
+            
+            # Konfirmasi
+            echo ""
+            echo "Node ID yang Anda masukkan: $NODE_ID"
+            read -p "Apakah ini benar? (y/n): " confirm
+            
+            if [[ "$confirm" =~ ^[Yy]$ ]]; then
                 break
             fi
         done
@@ -262,6 +287,9 @@ restart_service_if_needed() {
 
 # Eksekusi utama
 main() {
+    # Pastikan skrip dijalankan secara interaktif
+    check_interactive
+    
     echo "Membersihkan instalasi lama..."
     cleanup
 
@@ -274,7 +302,6 @@ main() {
     echo "Menginstal Nexus Prover..."
     install_nexus_prover
 
-    # PENTING: Meminta Node ID sebelum melanjutkan
     echo "Membuat file node-id..."
     create_node_id_file
 
