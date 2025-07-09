@@ -6,10 +6,9 @@ DATA_DIR="$WORK_DIR/nexus-data"
 mkdir -p "$WORK_DIR" "$DATA_DIR" "$WORK_DIR/nexus-docker"
 cd "$WORK_DIR"
 
-# Save script locally to enable interactive input
-SCRIPT_PATH="$WORK_DIR/nexus-docker.sh"
-curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o "$SCRIPT_PATH"
-chmod +x "$SCRIPT_PATH"
+# Save script locally to handle interactive input
+echo "$0" > nexus-docker.sh
+chmod +x nexus-docker.sh
 
 # Check if node-id file is provided as argument, else prompt interactively
 NODE_ID_FILE="$1"
@@ -156,12 +155,11 @@ mkdir -p "$data_dir"
 echo "Membangun image Docker: $container_name"
 docker build -t "$container_name" . || { echo "Gagal membangun image Docker"; exit 1; }
 
-# Run the container in interactive mode with network host
-echo -e "\e[32mSetup selesai. Memulai container Nexus secara interaktif...\e[0m"
-echo -e "\e[33mTekan Ctrl + D untuk detach dari container.\e[0m"
+# Run the container in interactive mode
+echo -e "\e[32mSetup selesai. Memulai container Nexus...\e[0m"
 docker run -it --detach-keys="ctrl-d" --name "$container_name" --network host -v "$data_dir:/root/nexus-data" "$container_name"
 
-echo -e "\e[32mContainer $container_name sedang berjalan secara interaktif.\e[0m"
+echo -e "\e[32mContainer $container_name sedang berjalan.\e[0m"
 echo -e "Untuk reattach ke container: \e[36mdocker attach --detach-keys='ctrl-d' $container_name\e[0m"
 echo -e "Untuk masuk ke container untuk debugging: \e[36mdocker exec -it $container_name /bin/bash\e[0m"
 echo -e "Untuk menghentikan container: \e[36mdocker stop $container_name\e[0m"
