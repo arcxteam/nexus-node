@@ -10,7 +10,7 @@ cd "$WORK_DIR"
 NODE_ID_FILE="$1"
 if [ -z "$NODE_ID_FILE" ]; then
     echo "Masukkan Node ID untuk node-id-1.txt:"
-    read -p "Node ID: " NODE_ID
+    read -p "Node ID: " NODE_ID < /dev/tty
     if [ -z "$NODE_ID" ]; then
         echo "Error: Node ID tidak boleh kosong."
         exit 1
