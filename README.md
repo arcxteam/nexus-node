@@ -58,7 +58,7 @@ sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 **1. Auto installing**
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh | bash -s node-id-1.txt
+curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh | bash
 ```
 
 **2. Manual installing**
@@ -94,7 +94,7 @@ echo "YOUR_NODE_ID" > /root/nexus/node-id-3.txt
 - Replace **YOUR_NODE_ID**
 - Rename for next node-id -> **node-id-2.txt** and more multiple 3,4,5....
 ```
-echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt && cd /root/nexus && chmod +x nexus-docker.sh && ./nexus-docker.sh node-id-2.txt
+echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt && cd /root/nexus/nexus-docker && chmod +x nexus-docker.sh && ./nexus-docker.sh node-id-2.txt
 ```
 
 - ### If the container is running, you will see the interactive output from the Dashboard nexus
