@@ -104,17 +104,7 @@ cat /root/nexus-data/your_container_name/nexus.log
 logs: If have facing issue cargo/cycles etc `Proof sent! You proved at 0 Hz` try `git tag -l` for the latest Api Network https://github.com/nexus-xyz/network-api/releases/
 
 ```
-cd ~/.nexus/network-api && \
-git fetch --all --tags && \
-LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1)) && \
-git stash && \
-git checkout $LATEST_TAG && \
-cd ~/.nexus/network-api/clients/cli && \
-cargo clean && \
-cargo build --release && \
-sudo systemctl daemon-reload && \
-sudo systemctl restart nexus.service && \
-sudo journalctl -u nexus.service -f -n 100
+docker ps -a --filter "name=nexus-docker-" --format "{{.Names}}" | xargs -r docker rm -f && docker images --filter "reference=nexus-docker-*" --format "{{.ID}}" | xargs -r docker rmi -f && rm -rf /root/nexus-data/nexus-docker-* && cd /root/nexus && chmod +x nexus.sh && ./nexus.sh
 ```
 
 ## 4. Usefull Commands
@@ -131,10 +121,12 @@ sudo journalctl -u nexus.service -f -n 100
 - docker images | grep nexus-docker
 - docker ps -a
 
-`Monitor the status logs`
+`Check Version`
 
-- 
-
+```
+source /root/.bashrc
+nexus-network --version
+```
 **2. Important Note** 
 
 - Delete all Nexus Node running service
