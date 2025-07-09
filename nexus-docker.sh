@@ -2,12 +2,12 @@
 
 # Define working directory
 WORK_DIR="/root/nexus"
+NODE_ID_DIR="$WORK_DIR/prover"
 DATA_DIR="$WORK_DIR/nexus-data"
-mkdir -p "$WORK_DIR" "$DATA_DIR"
+mkdir -p "$WORK_DIR" "$NODE_ID_DIR" "$DATA_DIR"
 
 # Function to create unique container name
 get_container_name() {
-    local node_id_file="$1"
     local base_name="nexus-docker"
     local instance_number=1
     while docker ps -a --format '{{.Names}}' | grep -q "^$base_name-$instance_number$"; do
@@ -20,27 +20,27 @@ get_container_name() {
 NODE_ID_FILE="$1"
 if [ -z "$NODE_ID_FILE" ]; then
     echo "Masukkan Node ID:"
-    read -p "Node ID: " NODE_ID
+    read -p "Node ID: " NODE_ID </dev/tty  # Use /dev/tty for curl ... | bash compatibility
     if [ -z "$NODE_ID" ]; then
         echo "Error: Node ID tidak boleh kosong."
         exit 1
     fi
     # Generate unique file name for new node-id
     instance_number=1
-    while [ -f "$WORK_DIR/node-id-$instance_number.txt" ]; do
+    while [ -f "$NODE_ID_DIR/node-id-$instance_number.txt" ]; do
         instance_number=$((instance_number + 1))
     done
     NODE_ID_FILE="node-id-$instance_number.txt"
-    echo "$NODE_ID" > "$WORK_DIR/$NODE_ID_FILE"
+    echo "$NODE_ID" > "$NODE_ID_DIR/$NODE_ID_FILE"
 else
-    if [ ! -f "$WORK_DIR/$NODE_ID_FILE" ]; then
-        echo "Error: File $NODE_ID_FILE tidak ditemukan di $WORK_DIR."
+    if [ ! -f "$NODE_ID_DIR/$NODE_ID_FILE" ]; then
+        echo "Error: File $NODE_ID_FILE tidak ditemukan di $NODE_ID_DIR."
         exit 1
     fi
 fi
 
 # Validate Node ID
-NODE_ID=$(cat "$WORK_DIR/$NODE_ID_FILE" | tr -d '\n')
+NODE_ID=$(cat "$NODE_ID_DIR/$NODE_ID_FILE" | tr -d '\n')
 if [ -z "$NODE_ID" ]; then
     echo "Error: Node ID kosong atau tidak diset di $NODE_ID_FILE."
     exit 1
@@ -90,15 +90,15 @@ CMD ["bash", "-c", "nexus-network start --node-id \$(cat /root/nexus/node-id.txt
 EOL
 
 # Copy Node ID to build context
-cp "$WORK_DIR/$NODE_ID_FILE" node-id.txt
+cp "$NODE_ID_DIR/$NODE_ID_FILE" node-id.txt
 
 # Build Docker image
 docker build -t nexus-docker .
 
 # Determine unique container name
-container_name=$(get_container_name "$NODE_ID_FILE")
+container_name=$(get_container_name)
 
-# Create persistent data folder
+# Create persistent data folder for this container
 data_dir="$DATA_DIR/$container_name"
 mkdir -p "$data_dir"
 
@@ -109,4 +109,5 @@ docker run -it --detach-keys="ctrl-d" --network host --name "$container_name" -v
 
 echo "Container $container_name sedang berjalan."
 echo "Untuk reattach: docker attach --detach-keys='ctrl-d' $container_name"
+echo "Untuk masuk ke container: docker exec -it $container_name /bin/bash"
 echo "Untuk menghentikan: docker stop $container_name"
