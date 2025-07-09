@@ -79,11 +79,13 @@ If you have runtime at **previous & run now**, please binding your **node-id** f
 - Open and wait the dashboard showing all and go section `add node` > `add CLI node` > check `copy` and done
 - Open your ssh-vps-terminal, add/input your **YOUR_NODE_ID** and use command to enter
 ```
-echo "YOUR_NODE_ID" > /root/.nexus/node-id
+mkdir -p /root/nexus
+echo "YOUR_NODE_ID" > /root/nexus/node-id.txt
 ```
 > For example 
 ```diff
-- echo "6317901" > ~/.nexus/node-id
+- mkdir -p /root/nexus
+- echo "8197634" > /root/nexus/node-id.txt
 ```
 - And now restart the systemctl nexus-service use command to enter
 
