@@ -2,23 +2,27 @@
 
 # Define working directory
 WORK_DIR="/root/nexus"
-DATA_DIR="/root/nexus-data"
+DATA_DIR="$WORK_DIR/nexus-data"
 mkdir -p "$WORK_DIR" "$DATA_DIR"
 cd "$WORK_DIR"
 
-# Check if node-id file is provided as argument
-if [ -z "$1" ]; then
-    echo "Error: Harap tentukan file node-id sebagai argumen."
-    echo "Contoh: ./nexus.sh node-id-1.txt"
-    exit 1
-fi
+# Check if node-id file is provided as argument, else prompt interactively
 NODE_ID_FILE="$1"
-
-# Check if node-id file exists
-if [ ! -f "$WORK_DIR/$NODE_ID_FILE" ]; then
-    echo "Error: File $NODE_ID_FILE tidak ditemukan di $WORK_DIR."
-    echo "Contoh: echo 'your-node-id-here' > $WORK_DIR/$NODE_ID_FILE"
-    exit 1
+if [ -z "$NODE_ID_FILE" ]; then
+    echo "Masukkan Node ID untuk node-id-1.txt:"
+    read -p "Node ID: " NODE_ID
+    if [ -z "$NODE_ID" ]; then
+        echo "Error: Node ID tidak boleh kosong."
+        exit 1
+    fi
+    NODE_ID_FILE="node-id-1.txt"
+    echo "$NODE_ID" > "$WORK_DIR/$NODE_ID_FILE"
+else
+    # Check if node-id file exists
+    if [ ! -f "$WORK_DIR/$NODE_ID_FILE" ]; then
+        echo "Error: File $NODE_ID_FILE tidak ditemukan di $WORK_DIR."
+        exit 1
+    fi
 fi
 
 # Validate Node ID
@@ -59,22 +63,17 @@ rustup target add riscv32i-unknown-none-elf
 
 # Install Nexus CLI with error handling
 echo "Menginstal Nexus CLI pada \$(date)" >> /root/nexus-data/nexus.log
-# Remove existing CLI installation to avoid symlink conflicts
 rm -rf /root/.nexus
 curl https://cli.nexus.xyz/ | bash -s -- -y || { echo "Gagal menginstal Nexus CLI pada \$(date)" >> /root/nexus-data/nexus.log; exit 1; }
 
-# Source bashrc to update PATH
+# Source bashrc and update PATH
 source /root/.bashrc
+export PATH="/root/.nexus/bin:\$PATH"
 
 # Verify nexus-network command
 if ! command -v nexus-network &> /dev/null; then
-    echo "Error: Perintah nexus-network tidak ditemukan setelah instalasi CLI pada \$(date)" >> /root/nexus-data/nexus.log
-    # Attempt to manually add PATH
-    export PATH="/root/.nexus/bin:\$PATH"
-    if ! command -v nexus-network &> /dev/null; then
-        echo "Error: Gagal menemukan nexus-network bahkan setelah menambahkan PATH pada \$(date)" >> /root/nexus-data/nexus.log
-        exit 1
-    fi
+    echo "Error: Perintah nexus-network tidak ditemukan pada \$(date)" >> /root/nexus-data/nexus.log
+    exit 1
 fi
 
 # Check if node-id.txt file exists
@@ -149,17 +148,24 @@ container_name="nexus-docker-$instance_number"
 data_dir="$DATA_DIR/$container_name"
 mkdir -p "$data_dir"
 
+# Save script locally to avoid TTY issues
+echo "$0" > nexus-docker.sh
+chmod +x nexus-docker.sh
+
 # Build the image
 echo "Membangun image Docker: $container_name"
 docker build -t "$container_name" . || { echo "Gagal membangun image Docker"; exit 1; }
 
-# Run the container interactively with custom detach keys
-echo -e "\e[32mSetup selesai. Memulai container Nexus secara interaktif...\e[0m"
-echo -e "\e[33mUntuk detach dari container tanpa menghentikan, tekan Ctrl + D\e[0m"
-docker run -it --detach-keys="ctrl-d" --name "$container_name" -v "$data_dir:/root/nexus-data" "$container_name"
+# Run the container in detached mode
+echo -e "\e[32mSetup selesai. Memulai container Nexus...\e[0m"
+docker run -d --name "$container_name" -v "$data_dir:/root/nexus-data" "$container_name"
 
-echo -e "\e[32mContainer $container_name sedang berjalan secara interaktif.\e[0m"
-echo -e "Untuk reattach ke container: \e[36mdocker attach $container_name\e[0m"
+# Attach to container for interactive dashboard
+echo -e "\e[33mMenghubungkan ke container untuk dashboard interaktif. Tekan Ctrl + D untuk detach.\e[0m"
+docker attach --detach-keys="ctrl-d" "$container_name"
+
+echo -e "\e[32mContainer $container_name sedang berjalan.\e[0m"
+echo -e "Untuk reattach ke container: \e[36mdocker attach --detach-keys='ctrl-d' $container_name\e[0m"
 echo -e "Untuk masuk ke container untuk debugging: \e[36mdocker exec -it $container_name /bin/bash\e[0m"
 echo -e "Untuk menghentikan container: \e[36mdocker stop $container_name\e[0m"
 echo -e "Untuk memeriksa log: \e[36mcat $data_dir/nexus.log\e[0m"
