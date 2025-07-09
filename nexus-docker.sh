@@ -6,6 +6,28 @@ DATA_DIR="/root/nexus-data"
 mkdir -p "$WORK_DIR" "$DATA_DIR"
 cd "$WORK_DIR"
 
+# Check if node-id file is provided as argument
+if [ -z "$1" ]; then
+    echo "Error: Harap tentukan file node-id sebagai argumen."
+    echo "Contoh: ./nexus.sh node-id-1.txt"
+    exit 1
+fi
+NODE_ID_FILE="$1"
+
+# Check if node-id file exists
+if [ ! -f "$WORK_DIR/$NODE_ID_FILE" ]; then
+    echo "Error: File $NODE_ID_FILE tidak ditemukan di $WORK_DIR."
+    echo "Contoh: echo 'your-node-id-here' > $WORK_DIR/$NODE_ID_FILE"
+    exit 1
+fi
+
+# Validate Node ID
+NODE_ID=$(cat "$WORK_DIR/$NODE_ID_FILE" | tr -d '\n')
+if [ -z "$NODE_ID" ]; then
+    echo "Error: Node ID kosong atau tidak diset di $NODE_ID_FILE."
+    exit 1
+fi
+
 # Check if Docker is installed and running
 if ! command -v docker &> /dev/null; then
     echo "Docker tidak ditemukan. Menginstal Docker..."
@@ -20,20 +42,6 @@ else
         sudo systemctl start docker
     fi
     echo "Docker sudah terinstal dan berjalan."
-fi
-
-# Check if node-id.txt file exists
-if [ ! -f "$WORK_DIR/node-id.txt" ]; then
-    echo "Error: File node-id.txt tidak ditemukan di $WORK_DIR. Buat file node-id.txt dengan Node ID."
-    echo "Contoh: echo 'your-node-id-here' > $WORK_DIR/node-id.txt"
-    exit 1
-fi
-
-# Validate Node ID
-NODE_ID=$(cat "$WORK_DIR/node-id.txt" | tr -d '\n')
-if [ -z "$NODE_ID" ]; then
-    echo "Error: Node ID kosong atau tidak diset di node-id.txt."
-    exit 1
 fi
 
 # Create working dir for Docker
@@ -51,6 +59,8 @@ rustup target add riscv32i-unknown-none-elf
 
 # Install Nexus CLI with error handling
 echo "Menginstal Nexus CLI pada \$(date)" >> /root/nexus-data/nexus.log
+# Remove existing CLI installation to avoid symlink conflicts
+rm -rf /root/.nexus
 curl https://cli.nexus.xyz/ | bash -s -- -y || { echo "Gagal menginstal Nexus CLI pada \$(date)" >> /root/nexus-data/nexus.log; exit 1; }
 
 # Source bashrc to update PATH
@@ -124,9 +134,9 @@ RUN chmod +x /start.sh
 ENTRYPOINT ["/start.sh"]
 EOL
 
-# Copy node-id.txt to build context
-if ! cp "$WORK_DIR/node-id.txt" node-id.txt; then
-    echo "Error: Gagal menyalin node-id.txt ke build context."
+# Copy node-id file to build context
+if ! cp "$WORK_DIR/$NODE_ID_FILE" node-id.txt; then
+    echo "Error: Gagal menyalin $NODE_ID_FILE ke build context."
     exit 1
 fi
 
