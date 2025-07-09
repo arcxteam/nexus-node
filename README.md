@@ -58,7 +58,7 @@ sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 **1. Auto installing**
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh | bash
+curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh | bash -s node-id-1.txt
 ```
 
 **2. Manual installing**
@@ -81,16 +81,18 @@ If you have runtime at **previous & run now**, please binding your **node-id** f
 ```
 mkdir -p /root/nexus
 echo "YOUR_NODE_ID" > /root/nexus/node-id-1.txt
+echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt
 ```
 > For example 
 ```diff
 - mkdir -p /root/nexus
 - echo "1234567890" > /root/nexus/node-id-1.txt
+- echo "0123456789" > /root/nexus/node-id-2.txt
 ```
 
 **2. Running on Multiple NODE-ID**
 
-- This will create and your rename/edit *node-id-2.txt* and *YOUR_NODE_ID* and more multiple
+- This will create and rename edit **node-id-2.txt** and **YOUR_NODE_ID** and more multiple
 ```
 echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt && cd /root/nexus && chmod +x nexus.sh && ./nexus.sh node-id-2.txt
 ```
