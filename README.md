@@ -79,22 +79,22 @@ If you have runtime at **previous & run now**, please binding your **node-id** f
 - Open and wait the dashboard showing all and go section `add node` > `add CLI node` > check `copy` and done
 - Open your ssh-vps-terminal, add/input your **YOUR_NODE_ID** and use command to enter
 ```
-mkdir -p /root/nexus
-echo "YOUR_NODE_ID" > /root/nexus/node-id-1.txt
 echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt
+echo "YOUR_NODE_ID" > /root/nexus/node-id-3.txt
 ```
 > For example 
 ```diff
-- mkdir -p /root/nexus
-- echo "1234567890" > /root/nexus/node-id-1.txt
-- echo "0123456789" > /root/nexus/node-id-2.txt
+- echo "1234567890" > /root/nexus/node-id-2.txt
+- echo "0123456789" > /root/nexus/node-id-3.txt
 ```
 
 **2. Running on Multiple NODE-ID**
 
-- This will create and rename edit **node-id-2.txt** and **YOUR_NODE_ID** and more multiple
+- This will Run and create
+- Replace **YOUR_NODE_ID**
+- Rename for next node-id -> **node-id-2.txt** and more multiple 3,4,5....
 ```
-echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt && cd /root/nexus && chmod +x nexus.sh && ./nexus.sh node-id-2.txt
+echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt && cd /root/nexus && chmod +x nexus-docker.sh && ./nexus-docker.sh node-id-2.txt
 ```
 
 - ### If the container is running, you will see the interactive output from the Dashboard nexus
