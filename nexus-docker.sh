@@ -6,11 +6,15 @@ DATA_DIR="$WORK_DIR/nexus-data"
 mkdir -p "$WORK_DIR" "$DATA_DIR"
 cd "$WORK_DIR"
 
+# Save script locally to avoid TTY issues
+curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o nexus-docker.sh
+chmod +x nexus-docker.sh
+
 # Check if node-id file is provided as argument, else prompt interactively
 NODE_ID_FILE="$1"
 if [ -z "$NODE_ID_FILE" ]; then
     echo "Masukkan Node ID untuk node-id-1.txt:"
-    read -p "Node ID: " NODE_ID < /dev/tty
+    read -p "Node ID: " NODE_ID
     if [ -z "$NODE_ID" ]; then
         echo "Error: Node ID tidak boleh kosong."
         exit 1
@@ -18,7 +22,6 @@ if [ -z "$NODE_ID_FILE" ]; then
     NODE_ID_FILE="node-id-1.txt"
     echo "$NODE_ID" > "$WORK_DIR/$NODE_ID_FILE"
 else
-    # Check if node-id file exists
     if [ ! -f "$WORK_DIR/$NODE_ID_FILE" ]; then
         echo "Error: File $NODE_ID_FILE tidak ditemukan di $WORK_DIR."
         exit 1
@@ -148,17 +151,13 @@ container_name="nexus-docker-$instance_number"
 data_dir="$DATA_DIR/$container_name"
 mkdir -p "$data_dir"
 
-# Save script locally to avoid TTY issues
-echo "$0" > nexus-docker.sh
-chmod +x nexus-docker.sh
-
 # Build the image
 echo "Membangun image Docker: $container_name"
 docker build -t "$container_name" . || { echo "Gagal membangun image Docker"; exit 1; }
 
 # Run the container in detached mode
 echo -e "\e[32mSetup selesai. Memulai container Nexus...\e[0m"
-docker run -d --name "$container_name" -v "$data_dir:/root/nexus-data" "$container_name"
+docker run -d --name "$container_name" --network host -v "$data_dir:/root/nexus-data" "$container_name"
 
 # Attach to container for interactive dashboard
 echo -e "\e[33mMenghubungkan ke container untuk dashboard interaktif. Tekan Ctrl + D untuk detach.\e[0m"
