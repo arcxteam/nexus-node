@@ -93,7 +93,7 @@ fi
 
 # Start Nexus network with logging
 echo "Memulai nexus-network dengan Node ID: \$NODE_ID pada \$(date)" >> /root/nexus-data/nexus.log
-nexus-network start --node-id \$NODE_ID 2>> /root/nexus-data/nexus.log || { echo "nexus-network start gagal pada \$(date)" >> /root/nexus-data/nexus.log; exit 1; }
+nexus-network start --node-id \$NODE_ID 2>> /root/nexus-data/nexus.log || { echo "nexus-network start gagal pada \$(date): \$?" >> /root/nexus-data/nexus.log; exit 1; }
 
 # Keep container running for debugging
 echo "nexus-network start selesai, menjaga container tetap berjalan untuk debugging pada \$(date)" >> /root/nexus-data/nexus.log
