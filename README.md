@@ -1,12 +1,12 @@
 ![com-webp-to-png-converter](https://github.com/user-attachments/assets/0fb7877d-8638-49a3-8a3f-670f9de617d9)
 
-# A Complete Guide Nexus Testnet Node - Fix Issue Nexus Labs (Prover Network)
+# A Complete Guide Nexus Testnet Node - Running on Docker (Interactive Detach)
 
 The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security. Read this step to runnig Nexus node as Prover Network.
 
 > **Update**: 2024, 10 Dec for CLI prover-id binding ![Confirm](https://img.shields.io/badge/Testnet_1-END_-red)
 
-> **Update**; 2025, 19 Feb CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_2-CLOSED_-brightgreen)
+> **Update**; 2025, 19 Feb CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_2-END_-red)
 
 > **Update**; 2025, 23 JUNE CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_3-ONGOING_-brightgreen)
 
@@ -58,7 +58,7 @@ sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 **1. Auto installing**
 
 ```bash
-curl sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus.sh | bash
+curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh | bash
 ```
 
 **2. Manual installing**
@@ -69,7 +69,7 @@ curl https://cli.nexus.xyz/ | sh
 
 > If you do not already have Rust, you will be prompted to install it.
 
-## 3. Update and Getting an Error
+## 3. Update Setting
 
 **1. Update CLI for Binding a node-id**
 
@@ -87,12 +87,11 @@ echo "YOUR_NODE_ID" > /root/nexus/node-id.txt
 - mkdir -p /root/nexus
 - echo "8197634" > /root/nexus/node-id.txt
 ```
-- And now restart the systemctl nexus-service use command to enter
-
+- If the container is running, you will see the interactive output from the Dashboard nexus
+- ## Detach (Close) with Ctrl + D
 ```
-sudo systemctl daemon-reload
-sudo systemctl restart nexus.service
-sudo journalctl -u nexus.service -f -n 100
+docker logs your_container_name
+cat /root/nexus-data/your_container_name/nexus.log
 ```
 > Still wait, this having for syncing on website, check `Nexus Point` on section page.....
 
@@ -122,32 +121,24 @@ sudo journalctl -u nexus.service -f -n 100
 
 **1. Based-on ran Nexus Labs node**
 
-`Check & Save the Prover-id & Node-id`
+`Check & Save the Node-id`
 
-- cat $HOME/.nexus/prover-id; echo ""
-- cat $HOME/.nexus/node-id; echo ""
+- cat $HOME/nexus/node-id.txt; echo ""
 
-`Start and enable the service`
-
-- sudo systemctl stop nexus.service
-- sudo systemctl daemon-reload
-- sudo systemctl enable nexus.service
-- sudo systemctl start nexus.service
-- sudo systemctl restart nexus.service
 
 `Checking the status service`
 
-- sudo systemctl status nexus.service
-- ps aux | grep nexus
+- docker images | grep nexus-docker
+- docker ps -a
 
 `Monitor the status logs`
 
-- sudo journalctl -u nexus.service -f -n 100
+- 
 
 **2. Important Note** 
 
 - Delete all Nexus Node running service
 
 ```
-sudo systemctl stop nexus.service && sudo systemctl disable nexus.service && sudo rm /etc/systemd/system/nexus.service && sudo systemctl daemon-reload && sudo systemctl reset-failed
+docker rmi -f $(docker images --filter "reference=nexus-docker-*" --format "{{.ID}}")
 ```
