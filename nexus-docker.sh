@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Define working directory
+# Define working directories
 WORK_DIR="/root/nexus"
 NODE_ID_DIR="$WORK_DIR/prover"
 DATA_DIR="$WORK_DIR/nexus-data"
 mkdir -p "$WORK_DIR" "$NODE_ID_DIR" "$DATA_DIR"
 
-# Function to create unique container name
+# Function to generate a unique container name
 get_container_name() {
     local base_name="nexus-docker"
     local instance_number=1
@@ -16,16 +16,17 @@ get_container_name() {
     echo "$base_name-$instance_number"
 }
 
-# Check if node-id file is provided as argument
+# Check if node-id file is provided as an argument
 NODE_ID_FILE="$1"
 if [ -z "$NODE_ID_FILE" ]; then
+    # Prompt for Node ID interactively, using /dev/tty for curl compatibility
     echo "Masukkan Node ID:"
-    read -p "Node ID: " NODE_ID </dev/tty  # Use /dev/tty for curl ... | bash compatibility
+    read -p "Node ID: " NODE_ID < /dev/tty
     if [ -z "$NODE_ID" ]; then
         echo "Error: Node ID tidak boleh kosong."
         exit 1
     fi
-    # Generate unique file name for new node-id
+    # Generate a unique file name for the new node-id
     instance_number=1
     while [ -f "$NODE_ID_DIR/node-id-$instance_number.txt" ]; do
         instance_number=$((instance_number + 1))
@@ -33,6 +34,7 @@ if [ -z "$NODE_ID_FILE" ]; then
     NODE_ID_FILE="node-id-$instance_number.txt"
     echo "$NODE_ID" > "$NODE_ID_DIR/$NODE_ID_FILE"
 else
+    # If argument is provided, check if the file exists
     if [ ! -f "$NODE_ID_DIR/$NODE_ID_FILE" ]; then
         echo "Error: File $NODE_ID_FILE tidak ditemukan di $NODE_ID_DIR."
         exit 1
@@ -42,7 +44,7 @@ fi
 # Validate Node ID
 NODE_ID=$(cat "$NODE_ID_DIR/$NODE_ID_FILE" | tr -d '\n')
 if [ -z "$NODE_ID" ]; then
-    echo "Error: Node ID kosong atau tidak diset di $NODE_ID_FILE."
+    echo "Error: Node ID kosong di $NODE_ID_FILE."
     exit 1
 fi
 
@@ -62,7 +64,7 @@ else
     echo "Docker sudah siap."
 fi
 
-# Create Dockerfile
+# Create Dockerfile in the current directory
 cat <<EOL > Dockerfile
 FROM ubuntu:24.04
 
@@ -93,9 +95,10 @@ EOL
 cp "$NODE_ID_DIR/$NODE_ID_FILE" node-id.txt
 
 # Build Docker image
+echo "Membangun image Docker..."
 docker build -t nexus-docker .
 
-# Determine unique container name
+# Generate unique container name
 container_name=$(get_container_name)
 
 # Create persistent data folder for this container
@@ -110,4 +113,4 @@ docker run -it --detach-keys="ctrl-d" --network host --name "$container_name" -v
 echo "Container $container_name sedang berjalan."
 echo "Untuk reattach: docker attach --detach-keys='ctrl-d' $container_name"
 echo "Untuk masuk ke container: docker exec -it $container_name /bin/bash"
-echo "Untuk menghentikan: docker stop $container_name"
+echo "Untuk menghentikan container: docker stop $container_name"
