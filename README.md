@@ -58,7 +58,8 @@ sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 **1. Auto installing**
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh | bash
+curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o /root/nexus/nexus-docker.sh
+chmod +x /root/nexus/nexus-docker.sh
 ```
 
 **2. Manual installing**
