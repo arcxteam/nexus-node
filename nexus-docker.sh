@@ -3,12 +3,8 @@
 # Define working directory
 WORK_DIR="/root/nexus"
 DATA_DIR="$WORK_DIR/nexus-data"
-mkdir -p "$WORK_DIR" "$DATA_DIR"
+mkdir -p "$WORK_DIR" "$DATA_DIR" "/root/nexus/nexus-docker"
 cd "$WORK_DIR"
-
-# Save script locally to avoid TTY issues
-curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o nexus-docker.sh
-chmod +x nexus-docker.sh
 
 # Check if node-id file is provided as argument, else prompt interactively
 NODE_ID_FILE="$1"
@@ -52,7 +48,7 @@ else
 fi
 
 # Create working dir for Docker
-mkdir -p nexus-docker && cd nexus-docker
+cd nexus-docker
 
 # Create start.sh
 cat <<EOL > start.sh
@@ -151,19 +147,20 @@ container_name="nexus-docker-$instance_number"
 data_dir="$DATA_DIR/$container_name"
 mkdir -p "$data_dir"
 
+# Save script locally
+echo "$0" > nexus-docker.sh
+chmod +x nexus-docker.sh
+
 # Build the image
 echo "Membangun image Docker: $container_name"
 docker build -t "$container_name" . || { echo "Gagal membangun image Docker"; exit 1; }
 
-# Run the container in detached mode
-echo -e "\e[32mSetup selesai. Memulai container Nexus...\e[0m"
-docker run -d --name "$container_name" --network host -v "$data_dir:/root/nexus-data" "$container_name"
+# Run the container in interactive mode with network host
+echo -e "\e[32mSetup selesai. Memulai container Nexus secara interaktif...\e[0m"
+echo -e "\e[33mTekan Ctrl + D untuk detach dari container.\e[0m"
+docker run -it --detach-keys="ctrl-d" --name "$container_name" --network host -v "$data_dir:/root/nexus-data" "$container_name"
 
-# Attach to container for interactive dashboard
-echo -e "\e[33mMenghubungkan ke container untuk dashboard interaktif. Tekan Ctrl + D untuk detach.\e[0m"
-docker attach --detach-keys="ctrl-d" "$container_name"
-
-echo -e "\e[32mContainer $container_name sedang berjalan.\e[0m"
+echo -e "\e[32mContainer $container_name sedang berjalan secara interaktif.\e[0m"
 echo -e "Untuk reattach ke container: \e[36mdocker attach --detach-keys='ctrl-d' $container_name\e[0m"
 echo -e "Untuk masuk ke container untuk debugging: \e[36mdocker exec -it $container_name /bin/bash\e[0m"
 echo -e "Untuk menghentikan container: \e[36mdocker stop $container_name\e[0m"
