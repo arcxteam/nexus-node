@@ -4,9 +4,9 @@
 
 The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security. Read this step to runnig Nexus node as Prover Network.
 
-> **Update**: 2024, 10 Dec for CLI prover-id binding ![Confirm](https://img.shields.io/badge/Testnet_1-END_-red)
+> 2024, 10 Dec for CLI prover-id binding ![Confirm](https://img.shields.io/badge/Testnet_1-END_-red)
 
-> **Update**; 2025, 19 Feb CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_2-END_-red)
+> 2025, 19 Feb CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_2-END_-red)
 
 > **Update**; 2025, 23 JUNE CLI Run for ![Confirm](https://img.shields.io/badge/Testnet_3-ONGOING_-brightgreen)
 
@@ -69,7 +69,7 @@ curl https://cli.nexus.xyz/ | sh
 
 > If you do not already have Rust, you will be prompted to install it.
 
-## 3. Update Setting
+## 3. Update First Setting or Multiple NODE-ID
 
 **1. Update CLI for Binding a node-id**
 
@@ -80,15 +80,23 @@ If you have runtime at **previous & run now**, please binding your **node-id** f
 - Open your ssh-vps-terminal, add/input your **YOUR_NODE_ID** and use command to enter
 ```
 mkdir -p /root/nexus
-echo "YOUR_NODE_ID" > /root/nexus/node-id.txt
+echo "YOUR_NODE_ID" > /root/nexus/node-id-1.txt
 ```
 > For example 
 ```diff
 - mkdir -p /root/nexus
-- echo "8197634" > /root/nexus/node-id.txt
+- echo "1234567890" > /root/nexus/node-id-1.txt
 ```
-- If the container is running, you will see the interactive output from the Dashboard nexus
-- ## Detach (Close) with Ctrl + D
+
+**2. Running on Multiple NODE-ID**
+
+- This will create and your rename/edit *node-id-2.txt* and *YOUR_NODE_ID* and more multiple
+```
+echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt && cd /root/nexus && chmod +x nexus.sh && ./nexus.sh node-id-2.txt
+```
+
+- ### If the container is running, you will see the interactive output from the Dashboard nexus
+- ### Command this as Detach (Close) with Ctrl + D
 ```
 docker logs your_container_name
 cat /root/nexus-data/your_container_name/nexus.log
@@ -99,12 +107,12 @@ cat /root/nexus-data/your_container_name/nexus.log
 
 ![Desktop-screenshot-02-21-2025_12_57_AM](https://github.com/user-attachments/assets/ea0abe49-3f66-4c98-8d30-20443ca0cef3)
 
-**2. Upgrade & restart service for network-api**
+**2. Upgrade version for network-api**
 
 logs: If have facing issue cargo/cycles etc `Proof sent! You proved at 0 Hz` try `git tag -l` for the latest Api Network https://github.com/nexus-xyz/network-api/releases/
 
 ```
-docker ps -a --filter "name=nexus-docker-" --format "{{.Names}}" | xargs -r docker rm -f && docker images --filter "reference=nexus-docker-*" --format "{{.ID}}" | xargs -r docker rmi -f && rm -rf /root/nexus-data/nexus-docker-* && cd /root/nexus && chmod +x nexus.sh && ./nexus.sh
+docker ps -a --filter "name=nexus-docker-" --format "{{.Names}}" | xargs -r docker rm -f && docker images --filter "reference=nexus-docker-*" --format "{{.ID}}" | xargs -r docker rmi -f && rm -rf /root/nexus-data/nexus-docker-* && cd /root/nexus && chmod +x nexus.sh && ./nexus.sh node-id-1.txt
 ```
 
 ## 4. Usefull Commands
@@ -113,13 +121,14 @@ docker ps -a --filter "name=nexus-docker-" --format "{{.Names}}" | xargs -r dock
 
 `Check & Save the Node-id`
 
-- cat $HOME/nexus/node-id.txt; echo ""
+- cat $HOME/nexus/node-id-1.txt; echo ""
 
 
 `Checking the status service`
 
 - docker images | grep nexus-docker
 - docker ps -a
+- docker stats
 
 `Check Version`
 
