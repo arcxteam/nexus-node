@@ -3,8 +3,13 @@
 # Define working directory
 WORK_DIR="/root/nexus"
 DATA_DIR="$WORK_DIR/nexus-data"
-mkdir -p "$WORK_DIR" "$DATA_DIR" "/root/nexus/nexus-docker"
+mkdir -p "$WORK_DIR" "$DATA_DIR" "$WORK_DIR/nexus-docker"
 cd "$WORK_DIR"
+
+# Save script locally to enable interactive input
+SCRIPT_PATH="$WORK_DIR/nexus-docker.sh"
+curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o "$SCRIPT_PATH"
+chmod +x "$SCRIPT_PATH"
 
 # Check if node-id file is provided as argument, else prompt interactively
 NODE_ID_FILE="$1"
@@ -146,10 +151,6 @@ container_name="nexus-docker-$instance_number"
 # Create persistent data folder
 data_dir="$DATA_DIR/$container_name"
 mkdir -p "$data_dir"
-
-# Save script locally
-echo "$0" > nexus-docker.sh
-chmod +x nexus-docker.sh
 
 # Build the image
 echo "Membangun image Docker: $container_name"
