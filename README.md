@@ -58,8 +58,7 @@ sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 **1. Auto installing**
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o /root/nexus/nexus-docker.sh
-chmod +x /root/nexus/nexus-docker.sh
+mkdir -p /root/nexus && curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o /root/nexus/nexus-docker.sh && chmod +x /root/nexus/nexus-docker.sh && /root/nexus/nexus-docker.sh
 ```
 
 **2. Manual installing**
@@ -80,13 +79,11 @@ If you have runtime at **previous & run now**, please binding your **node-id** f
 - Open and wait the dashboard showing all and go section `add node` > `add CLI node` > check `copy` and done
 - Open your ssh-vps-terminal, add/input your **YOUR_NODE_ID** and use command to enter
 ```
-echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt
-echo "YOUR_NODE_ID" > /root/nexus/node-id-3.txt
+echo "YOUR_NODE_ID" > /root/nexus/prover/node-id-2.txt
 ```
 > For example 
 ```diff
-- echo "1234567890" > /root/nexus/node-id-2.txt
-- echo "0123456789" > /root/nexus/node-id-3.txt
+- echo "1234567890" > /root/nexus/prover/node-id-2.txt
 ```
 
 **2. Running on Multiple NODE-ID**
@@ -95,7 +92,7 @@ echo "YOUR_NODE_ID" > /root/nexus/node-id-3.txt
 - Replace **YOUR_NODE_ID**
 - Rename for next node-id -> **node-id-2.txt** and more multiple 3,4,5....
 ```
-echo "YOUR_NODE_ID" > /root/nexus/node-id-2.txt && cd /root/nexus/nexus-docker && chmod +x nexus-docker.sh && ./nexus-docker.sh node-id-2.txt
+echo "YOUR_NODE_ID" > /root/nexus/prover/node-id-2.txt && cd root/nexus/nexus-docker.sh && chmod +x nexus-docker.sh && ./nexus-docker.sh node-id-2.txt
 ```
 
 - ### If the container is running, you will see the interactive output from the Dashboard nexus
