@@ -1,0 +1,15 @@
+services:
+  nodes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus-docker
+    tty: true
+    restart: unless-stopped
+    env_file:
+      - .env
+    deploy:
+      resources:
+        limits:
+          cpus: '4.00'       # 4 core
+          memory: 4096M      # 4 GB RAM
