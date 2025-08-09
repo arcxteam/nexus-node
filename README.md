@@ -1,8 +1,10 @@
 ![com-webp-to-png-converter](https://github.com/user-attachments/assets/0fb7877d-8638-49a3-8a3f-670f9de617d9)
 
-# A Complete Guide Nexus Testnet Node - Running on Docker (Interactive Detach)
+# A Complete Guide Nexus Testnet Node - Running on Docker (Non-Interactive)
 
 The Nexus Labs zkVM (zero-knowledge virtual machine) is a modular verifiable internet, as extensible, open-source, highly-parallelized, prover-optimized, contributor-friendly, zkVM written in Rust, focused on performance and security. Read this step to runnig Nexus node as Prover Network.
+
+[![Release Version](https://img.shields.io/github/v/release/nexus-xyz/nexus-cli.svg)](https://github.com/nexus-xyz/nexus-cli/releases)
 
 > 2024, 10 Dec for CLI prover-id binding ![Confirm](https://img.shields.io/badge/Testnet_1-END_-red)
 
@@ -53,15 +55,16 @@ If you don't have these dependencies already, install them first.
 sudo apt update && sudo apt upgrade -y 
 sudo apt install build-essential pkg-config libssl-dev git-all protobuf-compiler
 ```
-## 2. Start Install
+## 2. Start Install using Docker
 
-**1. Auto installing**
+**1. Auto Installing by Docker**
 
 ```bash
-mkdir -p /root/nexus && curl -sSL https://raw.githubusercontent.com/arcxteam/nexus-node/main/nexus-docker.sh -o /root/nexus/nexus-docker.sh && chmod +x /root/nexus/nexus-docker.sh && /root/nexus/nexus-docker.sh
+git clone https://github.com/arcxteam/nexus-node.git
+cd nexus-node
 ```
 
-**2. Manual installing**
+**2. Manual Installing by CLI**
 
 ```
 curl https://cli.nexus.xyz/ | sh
@@ -69,38 +72,41 @@ curl https://cli.nexus.xyz/ | sh
 
 > If you do not already have Rust, you will be prompted to install it.
 
-## 3. Update First Setting or Multiple NODE-ID
+## 3. Update First Setup 
 
-**1. Update CLI for Binding a node-id**
+**1. Update CLI for Binding a Wallet Address**
 
 If you have runtime at **previous & run now**, please binding your **node-id** for manual without auto installer skrip `nexus.sh` above. so the step here
 
 - Go to https://app.nexus.xyz/nodes
 - Open and wait the dashboard showing all and go section `add node` > `add CLI node` > check `copy` and done
-- Open your ssh-vps-terminal, add/input your **YOUR_NODE_ID** and use command to enter
+- Open your ssh-vps-terminal, add/input your **WALLET_ADDRESS** and use command to enter
 ```
-echo "YOUR_NODE_ID" > /root/nexus/prover/node-id-2.txt
+echo "WALLET_ADDRESS" > /root/nexus-node/.env
 ```
 > For example 
 ```diff
-- echo "1234567890" > /root/nexus/prover/node-id-2.txt
+- echo "0xxx12345678910" > /root/nexus-node/.env
 ```
 
-**2. Running on Multiple NODE-ID**
+**2. After running check logging**
+
+```
+docker compose logs -f nexus-docker
+```
+- or in the root
+```
+docker logs -f nexus-docker
+```
+
+**3. Running on Multiple NODE-ID**
 
 - This will Run and create
-- Replace **YOUR_NODE_ID**
-- Rename for next node-id -> **node-id-2.txt** and more multiple 3,4,5....
-```
-echo "YOUR_NODE_ID" > /root/nexus/prover/node-id-2.txt && cd root/nexus/nexus-docker.sh && chmod +x nexus-docker.sh && ./nexus-docker.sh node-id-2.txt
-```
+- Replace **WALLET_ADDRESS**
+- Rename for next wallet address -> **WALLET_ADDRESS_1** more multiple 3,4,5....
 
-- ### If the container is running, you will see the interactive output from the Dashboard nexus
-- ### Command this as Detach (Close) with Ctrl + D
-```
-docker logs your_container_name
-cat /root/nexus-data/your_container_name/nexus.log
-```
+- ### If the container is running, you will see the status from the Dashboard nexus slow this processing
+
 > Still wait, this having for syncing on website, check `Nexus Point` on section page.....
 
 ![image](https://github.com/user-attachments/assets/a2d5e515-df98-4701-93aa-5df3ceb26c57)
@@ -119,21 +125,18 @@ docker ps -a --filter "name=nexus-docker-" --format "{{.Names}}" | xargs -r dock
 
 **1. Based-on ran Nexus Labs node**
 
-`Check & Save the Node-id`
 
-- cat $HOME/nexus/node-id-1.txt; echo ""
-
-
-`Checking the status service`
+`Checking the status service and resources`
 
 - docker images | grep nexus-docker
 - docker ps -a
 - docker stats
 
-`Check Version`
+`Check Version or error`
 
 ```
 source /root/.bashrc
+source /root/.profile
 nexus-network --version
 ```
 **2. Important Note** 
