@@ -82,11 +82,11 @@ If you have runtime at **previous & run now**, please binding your **node-id** f
 - Open and wait the dashboard showing all and go section `add node` > `add CLI node` > check `copy` and done
 - Open your ssh-vps-terminal, add/input your **WALLET_ADDRESS** and use command to enter
 ```
-echo "WALLET_ADDRESS" > /root/nexus-node/.env
+echo "WALLET_ADDRESS=your-wallet" >> /root/nexus-node/.env
 ```
 > For example 
 ```diff
-- echo "0xxx12345678910" > /root/nexus-node/.env
+- echo "WALLET_ADDRESS=0x123456789" >> /root/nexus-node/.env
 ```
 
 **2. After running check logging**
