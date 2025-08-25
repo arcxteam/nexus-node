@@ -146,3 +146,63 @@ nexus-network --version
 ```
 docker rmi -f $(docker images --filter "reference=nexus-docker-*" --format "{{.ID}}")
 ```
+
+## 5. Running nodes as a service
+If you want to run a node (or several of them) as a service instead of docker
+
+**1. create service files**
+
+For each node you want to run create a new service file (replace [id] with your node id)
+
+```
+vi /etc/systemd/system/nexus-node-[id].service
+```
+
+**2. Paste in the following content:**
+
+```
+[Unit]
+Description=Nexus Node [id]
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=root
+Type=simple
+ExecStart=/path-to/nexus-network start --headless --node-id [id]
+
+[Install]
+WantedBy=multi-user.target
+```
+
+**3. Relaod systemd and enable the services**
+
+Repeat this step for each node you are setting up
+```
+sudo systemctl enable nexus-node-[id]
+```
+```
+sudo systemctl daemon-reload
+```
+
+**4. Run the node**
+
+Repeat this step for each node you want to run
+```
+sudo systemctl start nexus-node-[id]
+```
+
+**5. Stopping a node**
+```
+sudo systemctl stop nexus-node-[id]
+```
+
+**6. Viewing node Logs**
+```
+journalctl -f -u nexus-node-[id] -o cat
+```
+
+
+**7. Note**
+
+When a node is running it is exauhsting a single thread of the CPU, at maximum you shuold run N-1 nodes where N is the number of CPUs you have on the machine, you should also make sure you have enough RAM when running multiple nodes.
