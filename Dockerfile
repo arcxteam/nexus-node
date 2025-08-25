@@ -22,6 +22,7 @@ RUN chmod +x install.sh
 RUN NONINTERACTIVE=1 ./install.sh
 
 COPY entrypoint.sh /entrypoint.sh
+RUN source /root/.bashrc
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
