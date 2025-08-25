@@ -1,4 +1,4 @@
-FROM ubuntu:noble
+FROM alpine:3.22.0
 
 RUN apt-get update && apt-get install -y \
     curl \
